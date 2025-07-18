@@ -2,6 +2,23 @@
 
 This document provides a comprehensive overview of the Laravel CMS backend architecture, components, and implementation details.
 
+## Libraries used
+
+- **spatie/laravel-permission**: Role and permission management  
+  Install with:  
+  ```bash
+  composer require spatie/laravel-permission
+  php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+  php artisan migrate
+  ```
+
+- **laravel/sanctum**: API authentication  
+  Install with:  
+  ```bash
+  composer require laravel/sanctum
+  php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+  php artisan migrate
+  ```
 ## Architecture Overview
 
 The CMS backend is built using Laravel 10 with a clean, scalable architecture following best practices:

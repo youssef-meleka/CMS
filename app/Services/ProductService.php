@@ -18,33 +18,25 @@ class ProductService
         $this->productRepository = $productRepository;
     }
 
-    /**
-     * Get all products
-     */
-    public function getAllProducts(): Collection
+
+    public function getAllProducts(int $perPage = 15): LengthAwarePaginator
     {
-        return $this->productRepository->all();
+        return $this->productRepository->paginate($perPage);
     }
 
-    /**
-     * Get paginated products
-     */
+
     public function getPaginatedProducts(int $perPage = 15): LengthAwarePaginator
     {
         return $this->productRepository->paginate($perPage);
     }
 
-    /**
-     * Get product by ID
-     */
+
     public function getProductById(int $id): ?Product
     {
         return $this->productRepository->findById($id);
     }
 
-    /**
-     * Create new product
-     */
+
     public function createProduct(array $data, User $user): Product
     {
         $data['created_by'] = $user->id;
@@ -53,65 +45,49 @@ class ProductService
         return $this->productRepository->create($data);
     }
 
-    /**
-     * Update product
-     */
+
     public function updateProduct(int $id, array $data): bool
     {
         return $this->productRepository->update($id, $data);
     }
 
-    /**
-     * Delete product
-     */
+
     public function deleteProduct(int $id): bool
     {
         return $this->productRepository->delete($id);
     }
 
-    /**
-     * Search products
-     */
-    public function searchProducts(string $query): Collection
+
+    public function searchProducts(string $query, int $perPage = 15): LengthAwarePaginator
     {
-        return $this->productRepository->search($query);
+        return $this->productRepository->searchPaginated($query, $perPage);
     }
 
-    /**
-     * Get products by category
-     */
-    public function getProductsByCategory(string $category): Collection
+
+    public function getProductsByCategory(string $category, int $perPage = 15): LengthAwarePaginator
     {
-        return $this->productRepository->getByCategory($category);
+        return $this->productRepository->getByCategoryPaginated($category, $perPage);
     }
 
-    /**
-     * Get active products
-     */
+
     public function getActiveProducts(): Collection
     {
         return $this->productRepository->getActiveProducts();
     }
 
-    /**
-     * Get low stock products
-     */
+
     public function getLowStockProducts(int $threshold = 10): Collection
     {
         return $this->productRepository->getLowStockProducts($threshold);
     }
 
-    /**
-     * Update product stock
-     */
+
     public function updateStock(int $id, int $quantity): bool
     {
         return $this->productRepository->updateStock($id, $quantity);
     }
 
-    /**
-     * Decrease product stock
-     */
+
     public function decreaseStock(int $id, int $quantity): bool
     {
         $product = $this->productRepository->findById($id);
@@ -123,9 +99,7 @@ class ProductService
         return $this->productRepository->updateStock($id, $product->stock_quantity - $quantity);
     }
 
-    /**
-     * Increase product stock
-     */
+
     public function increaseStock(int $id, int $quantity): bool
     {
         $product = $this->productRepository->findById($id);
@@ -137,9 +111,7 @@ class ProductService
         return $this->productRepository->updateStock($id, $product->stock_quantity + $quantity);
     }
 
-    /**
-     * Generate unique SKU
-     */
+
     private function generateSku(string $productName): string
     {
         $baseSku = strtoupper(Str::slug($productName, ''));
@@ -155,9 +127,7 @@ class ProductService
         return $sku;
     }
 
-    /**
-     * Check if product is available
-     */
+
     public function isProductAvailable(int $id, int $quantity = 1): bool
     {
         $product = $this->productRepository->findById($id);
@@ -165,15 +135,26 @@ class ProductService
         return $product && $product->is_active && $product->stock_quantity >= $quantity;
     }
 
-    /**
-     * Get product categories
-     */
+
     public function getCategories(): array
     {
-        return $this->productRepository->all()
+        $categories = $this->productRepository->all()
             ->pluck('category')
             ->unique()
             ->values()
             ->toArray();
+
+        $result = [];
+        foreach ($categories as $category) {
+            $count = $this->productRepository->all()
+                ->where('category', $category)
+                ->count();
+            $result[] = [
+                'category' => $category,
+                'count' => $count,
+            ];
+        }
+
+        return $result;
     }
 }

@@ -8,6 +8,8 @@ use App\Repositories\ProductRepository;
 use App\Services\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 class ProductServiceTest extends TestCase
@@ -21,6 +23,10 @@ class ProductServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Create roles and permissions
+        $this->setupRolesAndPermissions();
+
         $this->productRepository = new ProductRepository();
         $this->productService = new ProductService($this->productRepository);
 
@@ -28,8 +34,19 @@ class ProductServiceTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => Hash::make('Password0!'),
-            'role' => 'admin',
         ]);
+        $this->user->assignRole('admin');
+    }
+
+    private function setupRolesAndPermissions(): void
+    {
+        // Create permissions
+        Permission::create(['name' => 'manage products']);
+        Permission::create(['name' => 'view products']);
+
+        // Create roles
+        $admin = Role::create(['name' => 'admin']);
+        $admin->givePermissionTo(['manage products', 'view products']);
     }
 
     /** @test */
@@ -382,8 +399,8 @@ class ProductServiceTest extends TestCase
         $categories = $this->productService->getCategories();
 
         $this->assertCount(2, $categories);
-        $this->assertContains('Electronics', $categories);
-        $this->assertContains('Furniture', $categories);
+        $this->assertContains(['category' => 'Electronics', 'count' => 2], $categories);
+        $this->assertContains(['category' => 'Furniture', 'count' => 1], $categories);
     }
 
     /** @test */

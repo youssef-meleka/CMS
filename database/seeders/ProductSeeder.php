@@ -14,7 +14,7 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminUser = User::where('role', 'admin')->first();
+        $adminUser = User::role('admin')->first();
 
         $products = [
             [

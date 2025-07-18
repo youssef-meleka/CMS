@@ -27,43 +27,32 @@ class OrderService
         $this->productService = $productService;
     }
 
-    /**
-     * Get all orders
-     */
+
     public function getAllOrders(): Collection
     {
         return $this->orderRepository->all();
     }
 
-    /**
-     * Get paginated orders
-     */
+
     public function getPaginatedOrders(int $perPage = 15): LengthAwarePaginator
     {
         return $this->orderRepository->paginate($perPage);
     }
 
-    /**
-     * Get order by ID
-     */
+
     public function getOrderById(int $id): ?Order
     {
         return $this->orderRepository->findById($id);
     }
 
-    /**
-     * Create new order
-     */
+
     public function createOrder(array $orderData, array $items, User $customer): Order
     {
         return DB::transaction(function () use ($orderData, $items, $customer) {
-            // Generate order number
             $orderNumber = Order::generateOrderNumber();
 
-            // Calculate total amount
             $totalAmount = $this->calculateTotalAmount($items);
 
-            // Create order
             $order = $this->orderRepository->create([
                 'order_number' => $orderNumber,
                 'customer_id' => $customer->id,
@@ -74,7 +63,6 @@ class OrderService
                 'notes' => $orderData['notes'] ?? null,
             ]);
 
-            // Create order items and update stock
             foreach ($items as $item) {
                 $product = $this->productRepository->findById($item['product_id']);
 
@@ -86,7 +74,6 @@ class OrderService
                     throw new \Exception("Insufficient stock for product: {$product->name}");
                 }
 
-                // Create order item
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item['product_id'],
@@ -95,7 +82,6 @@ class OrderService
                     'total_price' => $item['quantity'] * ($item['unit_price'] ?? $product->price),
                 ]);
 
-                // Decrease stock
                 $this->productService->decreaseStock($item['product_id'], $item['quantity']);
             }
 
@@ -103,17 +89,13 @@ class OrderService
         });
     }
 
-    /**
-     * Update order
-     */
+
     public function updateOrder(int $id, array $data): bool
     {
         return $this->orderRepository->update($id, $data);
     }
 
-    /**
-     * Delete order
-     */
+
     public function deleteOrder(int $id): bool
     {
         return DB::transaction(function () use ($id) {
@@ -123,7 +105,6 @@ class OrderService
                 return false;
             }
 
-            // Restore stock for each item
             foreach ($order->orderItems as $item) {
                 $this->productService->increaseStock($item->product_id, $item->quantity);
             }
@@ -132,57 +113,43 @@ class OrderService
         });
     }
 
-    /**
-     * Update order status
-     */
+
     public function updateOrderStatus(int $id, string $status): bool
     {
         return $this->orderRepository->updateStatus($id, $status);
     }
 
-    /**
-     * Assign order to user
-     */
+
     public function assignOrderToUser(int $orderId, int $userId): bool
     {
         return $this->orderRepository->assignToUser($orderId, $userId);
     }
 
-    /**
-     * Get orders by status
-     */
-    public function getOrdersByStatus(string $status): Collection
+
+    public function getOrdersByStatus(string $status, int $perPage = 15): LengthAwarePaginator
     {
-        return $this->orderRepository->getByStatus($status);
+        return $this->orderRepository->getByStatusPaginated($status, $perPage);
     }
 
-    /**
-     * Get orders by customer
-     */
-    public function getOrdersByCustomer(int $customerId): Collection
+
+    public function getOrdersByCustomer(int $customerId, int $perPage = 15): LengthAwarePaginator
     {
-        return $this->orderRepository->getByCustomer($customerId);
+        return $this->orderRepository->getByCustomerPaginated($customerId, $perPage);
     }
 
-    /**
-     * Get orders assigned to user
-     */
-    public function getOrdersAssignedToUser(int $userId): Collection
+
+    public function getOrdersAssignedToUser(int $userId, int $perPage = 15): LengthAwarePaginator
     {
-        return $this->orderRepository->getAssignedToUser($userId);
+        return $this->orderRepository->getAssignedToUserPaginated($userId, $perPage);
     }
 
-    /**
-     * Get orders within date range
-     */
+
     public function getOrdersByDateRange(string $startDate, string $endDate): Collection
     {
         return $this->orderRepository->getOrdersByDateRange($startDate, $endDate);
     }
 
-    /**
-     * Calculate total amount from items
-     */
+
     private function calculateTotalAmount(array $items): float
     {
         $total = 0;
@@ -196,27 +163,29 @@ class OrderService
         return $total;
     }
 
-    /**
-     * Get order statistics
-     */
+
     public function getOrderStatistics(): array
     {
         $orders = $this->orderRepository->all();
 
         return [
             'total_orders' => $orders->count(),
-            'pending_orders' => $orders->where('status', 'pending')->count(),
-            'processing_orders' => $orders->where('status', 'processing')->count(),
-            'shipped_orders' => $orders->where('status', 'shipped')->count(),
-            'delivered_orders' => $orders->where('status', 'delivered')->count(),
-            'cancelled_orders' => $orders->where('status', 'cancelled')->count(),
             'total_revenue' => round($orders->where('status', '!=', 'cancelled')->sum('total_amount'), 3),
+            'orders_by_status' => [
+                'pending' => $orders->where('status', 'pending')->count(),
+                'processing' => $orders->where('status', 'processing')->count(),
+                'shipped' => $orders->where('status', 'shipped')->count(),
+                'delivered' => $orders->where('status', 'delivered')->count(),
+                'cancelled' => $orders->where('status', 'cancelled')->count(),
+            ],
+            'average_order_value' => $orders->where('status', '!=', 'cancelled')->count() > 0
+                ? round($orders->where('status', '!=', 'cancelled')->sum('total_amount') / $orders->where('status', '!=', 'cancelled')->count(), 3)
+                : 0,
+            'recent_orders' => $orders->take(5)->values(),
         ];
     }
 
-    /**
-     * Get available order statuses
-     */
+
     public function getAvailableStatuses(): array
     {
         return $this->orderRepository->all()->pluck('status')->unique()->values()->toArray();

@@ -16,9 +16,9 @@ class OrderSeeder extends Seeder
      */
     public function run(): void
     {
-        $customers = User::where('role', 'employee')->take(3)->get();
+        $customers = User::role('customer')->take(3)->get();
         $products = Product::all();
-        $manager = User::where('role', 'manager')->first();
+        $manager = User::role('manager')->first();
 
         foreach ($customers as $index => $customer) {
             // Create order

@@ -18,11 +18,13 @@ class ProductController extends Controller
     {
         $this->productService = $productService;
         $this->middleware('auth:sanctum');
+        $this->middleware('can:view products')->only(['index', 'show', 'categories', 'lowStock']);
+        $this->middleware('can:create products')->only(['store']);
+        $this->middleware('can:edit products')->only(['update']);
+        $this->middleware('can:delete products')->only(['destroy']);
+        $this->middleware('can:manage product stock')->only(['updateStock']);
     }
 
-    /**
-     * Display a listing of products
-     */
     public function index(Request $request): JsonResponse
     {
         try {
@@ -31,17 +33,25 @@ class ProductController extends Controller
             $category = $request->get('category');
 
             if ($search) {
-                $products = $this->productService->searchProducts($search);
+                $products = $this->productService->searchProducts($search, $perPage);
             } elseif ($category) {
-                $products = $this->productService->getProductsByCategory($category);
+                $products = $this->productService->getProductsByCategory($category, $perPage);
             } else {
-                $products = $this->productService->getPaginatedProducts($perPage);
+                $products = $this->productService->getAllProducts($perPage);
             }
 
             return response()->json([
                 'success' => true,
-                'data' => ProductResource::collection($products)
-            ], 200);
+                'data' => ProductResource::collection($products->items()),
+                'pagination' => [
+                    'current_page' => $products->currentPage(),
+                    'per_page' => $products->perPage(),
+                    'total' => $products->total(),
+                    'last_page' => $products->lastPage(),
+                    'from' => $products->firstItem(),
+                    'to' => $products->lastItem(),
+                ]
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -51,9 +61,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Store a newly created product
-     */
     public function store(StoreProductRequest $request): JsonResponse
     {
         try {
@@ -76,9 +83,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Display the specified product
-     */
     public function show(int $id): JsonResponse
     {
         try {
@@ -104,9 +108,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Update the specified product
-     */
     public function update(UpdateProductRequest $request, int $id): JsonResponse
     {
         try {
@@ -135,9 +136,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Remove the specified product
-     */
     public function destroy(int $id): JsonResponse
     {
         try {
@@ -163,9 +161,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Get product categories
-     */
     public function categories(): JsonResponse
     {
         try {
@@ -184,9 +179,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Get low stock products
-     */
     public function lowStock(Request $request): JsonResponse
     {
         try {
@@ -206,9 +198,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Update product stock
-     */
     public function updateStock(Request $request, int $id): JsonResponse
     {
         try {

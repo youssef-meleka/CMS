@@ -11,6 +11,8 @@ use App\Services\OrderService;
 use App\Services\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 class OrderServiceTest extends TestCase
@@ -28,6 +30,10 @@ class OrderServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Create roles and permissions
+        $this->setupRolesAndPermissions();
+
         $this->orderRepository = new OrderRepository();
         $this->productRepository = new ProductRepository();
         $this->productService = new ProductService($this->productRepository);
@@ -41,15 +47,15 @@ class OrderServiceTest extends TestCase
             'name' => 'Admin User',
             'email' => 'admin@test.com',
             'password' => Hash::make('Password0!'),
-            'role' => 'admin',
         ]);
+        $admin->assignRole('admin');
 
         $this->customer = User::create([
             'name' => 'Customer User',
             'email' => 'customer@test.com',
             'password' => Hash::make('Password0!'),
-            'role' => 'employee',
         ]);
+        $this->customer->assignRole('customer');
 
         $this->product1 = Product::create([
             'name' => 'Test Product 1',
@@ -70,6 +76,22 @@ class OrderServiceTest extends TestCase
             'sku' => 'SKU002',
             'created_by' => $admin->id,
         ]);
+    }
+
+    private function setupRolesAndPermissions(): void
+    {
+        // Create permissions
+        Permission::create(['name' => 'manage orders']);
+        Permission::create(['name' => 'view orders']);
+        Permission::create(['name' => 'view own orders']);
+        Permission::create(['name' => 'manage products']);
+
+        // Create roles
+        $admin = Role::create(['name' => 'admin']);
+        $admin->givePermissionTo(['manage orders', 'view orders', 'manage products']);
+
+        $customer = Role::create(['name' => 'customer']);
+        $customer->givePermissionTo(['view own orders']);
     }
 
     /** @test */
@@ -345,10 +367,12 @@ class OrderServiceTest extends TestCase
         $statistics = $this->orderService->getOrderStatistics();
 
         $this->assertEquals(3, $statistics['total_orders']);
-        $this->assertEquals(1, $statistics['pending_orders']);
-        $this->assertEquals(1, $statistics['shipped_orders']);
-        $this->assertEquals(1, $statistics['delivered_orders']);
+        $this->assertEquals(1, $statistics['orders_by_status']['pending']);
+        $this->assertEquals(1, $statistics['orders_by_status']['shipped']);
+        $this->assertEquals(1, $statistics['orders_by_status']['delivered']);
         $this->assertEquals(449.97, $statistics['total_revenue']); // 99.99 + 149.99 + 199.99
+        $this->assertArrayHasKey('average_order_value', $statistics);
+        $this->assertArrayHasKey('recent_orders', $statistics);
     }
 
     /** @test */

@@ -30,7 +30,8 @@
                         <option value="">All Roles</option>
                         <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
                         <option value="manager" {{ request('role') === 'manager' ? 'selected' : '' }}>Manager</option>
-                        <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>User</option>
+                        <option value="employee" {{ request('role') === 'employee' ? 'selected' : '' }}>Employee</option>
+                        <option value="customer" {{ request('role') === 'customer' ? 'selected' : '' }}>Customer</option>
                     </select>
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
@@ -86,11 +87,13 @@
                                     $roleColors = [
                                         'admin' => 'danger',
                                         'manager' => 'warning',
-                                        'user' => 'success'
+                                        'employee' => 'success',
+                                        'customer' => 'info'
                                     ];
+                                    $userRole = $user->roles->first()?->name ?? 'No Role';
                                 @endphp
-                                <span class="badge bg-{{ $roleColors[$user->role] ?? 'secondary' }}">
-                                    {{ ucfirst($user->role) }}
+                                <span class="badge bg-{{ $roleColors[$userRole] ?? 'secondary' }}">
+                                    {{ ucfirst($userRole) }}
                                 </span>
                             </td>
                             <td>

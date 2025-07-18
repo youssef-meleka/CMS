@@ -39,33 +39,25 @@ class Product extends Model
         'is_active' => 'boolean',
     ];
 
-    /**
-     * User who created this product
-     */
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    /**
-     * Order items for this product
-     */
+
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    /**
-     * Check if product is in stock
-     */
+
     public function isInStock(): bool
     {
         return $this->stock_quantity > 0;
     }
 
-    /**
-     * Decrease stock quantity
-     */
+
     public function decreaseStock(int $quantity): bool
     {
         if ($this->stock_quantity >= $quantity) {
@@ -75,26 +67,20 @@ class Product extends Model
         return false;
     }
 
-    /**
-     * Increase stock quantity
-     */
+
     public function increaseStock(int $quantity): bool
     {
         $this->stock_quantity += $quantity;
         return $this->save();
     }
 
-    /**
-     * Scope for active products
-     */
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    /**
-     * Scope for products by category
-     */
+
     public function scopeByCategory($query, string $category)
     {
         return $query->where('category', $category);

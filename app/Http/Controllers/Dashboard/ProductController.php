@@ -15,16 +15,13 @@ class ProductController extends Controller
     public function __construct(ProductService $productService)
     {
         $this->productService = $productService;
+        $this->middleware('can:manage products');
     }
 
-    /**
-     * Display a listing of products.
-     */
     public function index(Request $request)
     {
         $query = Product::with('creator');
 
-        // Search functionality
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -33,12 +30,10 @@ class ProductController extends Controller
             });
         }
 
-        // Filter by category
         if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
 
-        // Filter by stock status
         if ($request->filled('stock_status')) {
             if ($request->stock_status === 'low') {
                 $query->where('stock_quantity', '<', 10);
@@ -53,18 +48,12 @@ class ProductController extends Controller
         return view('dashboard.products.index', compact('products', 'categories'));
     }
 
-    /**
-     * Show the form for creating a new product.
-     */
     public function create()
     {
         $categories = Product::distinct()->pluck('category')->filter();
         return view('dashboard.products.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created product in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -79,7 +68,6 @@ class ProductController extends Controller
         $data = $request->only(['name', 'description', 'price', 'stock_quantity', 'category']);
         $data['created_by'] = auth()->id();
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
             $data['image_url'] = $imagePath;
@@ -91,27 +79,18 @@ class ProductController extends Controller
             ->with('success', 'Product created successfully.');
     }
 
-    /**
-     * Display the specified product.
-     */
     public function show(Product $product)
     {
         $product->load('creator');
         return view('dashboard.products.show', compact('product'));
     }
 
-    /**
-     * Show the form for editing the specified product.
-     */
     public function edit(Product $product)
     {
         $categories = Product::distinct()->pluck('category')->filter();
         return view('dashboard.products.edit', compact('product', 'categories'));
     }
 
-    /**
-     * Update the specified product in storage.
-     */
     public function update(Request $request, Product $product)
     {
         $request->validate([
@@ -125,9 +104,7 @@ class ProductController extends Controller
 
         $data = $request->only(['name', 'description', 'price', 'stock_quantity', 'category']);
 
-        // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image if exists
             if ($product->image_url) {
                 Storage::disk('public')->delete($product->image_url);
             }
@@ -142,12 +119,8 @@ class ProductController extends Controller
             ->with('success', 'Product updated successfully.');
     }
 
-    /**
-     * Remove the specified product from storage.
-     */
     public function destroy(Product $product)
     {
-        // Delete associated image
         if ($product->image_url) {
             Storage::disk('public')->delete($product->image_url);
         }
@@ -158,9 +131,6 @@ class ProductController extends Controller
             ->with('success', 'Product deleted successfully.');
     }
 
-    /**
-     * Update product stock quantity.
-     */
     public function updateStock(Request $request, Product $product)
     {
         $request->validate([

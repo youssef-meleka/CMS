@@ -44,19 +44,29 @@ interface ProductRepositoryInterface
     public function delete(int $id): bool;
 
     /**
+     * Search products
+     */
+    public function search(string $query): Collection;
+
+    /**
+     * Search products with pagination
+     */
+    public function searchPaginated(string $query, int $perPage = 15): LengthAwarePaginator;
+
+    /**
      * Get products by category
      */
     public function getByCategory(string $category): Collection;
 
     /**
+     * Get products by category with pagination
+     */
+    public function getByCategoryPaginated(string $category, int $perPage = 15): LengthAwarePaginator;
+
+    /**
      * Get active products
      */
     public function getActiveProducts(): Collection;
-
-    /**
-     * Search products
-     */
-    public function search(string $query): Collection;
 
     /**
      * Get low stock products

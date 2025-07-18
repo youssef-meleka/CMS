@@ -57,10 +57,11 @@
                     <div class="mb-3">
                         <label for="role" class="form-label">User Role</label>
                         <select class="form-select @error('role') is-invalid @enderror" id="role" name="role" required>
-                            <option value="">Select Role</option>
-                            <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Admin</option>
-                            <option value="manager" {{ old('role', $user->role) === 'manager' ? 'selected' : '' }}>Manager</option>
-                            <option value="user" {{ old('role', $user->role) === 'user' ? 'selected' : '' }}>User</option>
+                                                            <option value="">Select Role</option>
+                                <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="manager" {{ old('role', $user->role) === 'manager' ? 'selected' : '' }}>Manager</option>
+                                <option value="employee" {{ old('role', $user->role) === 'employee' ? 'selected' : '' }}>Employee</option>
+                                <option value="customer" {{ old('role', $user->role) === 'customer' ? 'selected' : '' }}>Customer</option>
                         </select>
                         @error('role')
                             <div class="invalid-feedback">{{ $message }}</div>

@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 class ProductTest extends TestCase
@@ -16,40 +18,98 @@ class ProductTest extends TestCase
     protected User $admin;
     protected User $manager;
     protected User $employee;
+    protected User $customer;
     protected string $adminToken;
     protected string $managerToken;
     protected string $employeeToken;
+    protected string $customerToken;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->setupRolesAndPermissions();
+        $this->createUsers();
+        $this->createTokens();
+    }
 
-        // Create users
+    private function setupRolesAndPermissions(): void
+    {
+        // Create permissions
+        $permissions = [
+            'access dashboard', 'manage users', 'manage products', 'manage orders',
+            'view products', 'view orders', 'view own orders', 'create products',
+            'edit products', 'delete products', 'create orders', 'edit orders',
+            'delete orders', 'update order status', 'assign orders', 'view statistics',
+            'manage product stock',
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        // Create roles with permissions
+        $admin = Role::firstOrCreate(['name' => 'admin']);
+        $admin->syncPermissions(Permission::all());
+
+        $manager = Role::firstOrCreate(['name' => 'manager']);
+        $manager->syncPermissions([
+            'view products', 'create products', 'edit products', 'delete products',
+            'manage product stock', 'view orders', 'create orders', 'edit orders',
+            'delete orders', 'update order status', 'assign orders', 'view statistics'
+        ]);
+
+        $employee = Role::firstOrCreate(['name' => 'employee']);
+        $employee->syncPermissions([
+            'view products', 'view own orders', 'create orders'
+        ]);
+
+        $customer = Role::firstOrCreate(['name' => 'customer']);
+        $customer->syncPermissions([
+            'view products', 'view own orders', 'create orders'
+        ]);
+    }
+
+    private function createUsers(): void
+    {
         $this->admin = User::create([
             'name' => 'Admin User',
             'email' => 'admin@test.com',
             'password' => Hash::make('Password0!'),
-            'role' => 'admin',
+            'is_active' => true,
         ]);
+        $this->admin->assignRole('admin');
 
         $this->manager = User::create([
             'name' => 'Manager User',
             'email' => 'manager@test.com',
             'password' => Hash::make('Password0!'),
-            'role' => 'manager',
+            'is_active' => true,
         ]);
+        $this->manager->assignRole('manager');
 
         $this->employee = User::create([
             'name' => 'Employee User',
             'email' => 'employee@test.com',
             'password' => Hash::make('Password0!'),
-            'role' => 'employee',
+            'is_active' => true,
         ]);
+        $this->employee->assignRole('employee');
 
-        // Get tokens
+        $this->customer = User::create([
+            'name' => 'Customer User',
+            'email' => 'customer@test.com',
+            'password' => Hash::make('Password0!'),
+            'is_active' => true,
+        ]);
+        $this->customer->assignRole('customer');
+    }
+
+    private function createTokens(): void
+    {
         $this->adminToken = $this->admin->createToken('test-token')->plainTextToken;
         $this->managerToken = $this->manager->createToken('test-token')->plainTextToken;
         $this->employeeToken = $this->employee->createToken('test-token')->plainTextToken;
+        $this->customerToken = $this->customer->createToken('test-token')->plainTextToken;
     }
 
     /** @test */
@@ -118,6 +178,24 @@ class ProductTest extends TestCase
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->employeeToken,
+        ])->postJson('/api/products', $productData);
+
+        $response->assertStatus(403);
+    }
+
+    /** @test */
+    public function customer_cannot_create_product()
+    {
+        $productData = [
+            'name' => 'Customer Product',
+            'description' => 'Customer Description',
+            'price' => 19.99,
+            'category' => 'Books',
+            'stock_quantity' => 75,
+        ];
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->customerToken,
         ])->postJson('/api/products', $productData);
 
         $response->assertStatus(403);
@@ -199,6 +277,25 @@ class ProductTest extends TestCase
                         'name' => 'Single Product',
                         'price' => '199.99',
                     ],
+                ])
+                ->assertJsonStructure([
+                    'data' => [
+                        'id',
+                        'name',
+                        'description',
+                        'price',
+                        'category',
+                        'stock_quantity',
+                        'sku',
+                        'image_url',
+                        'is_active',
+                        'created_by',
+                        'creator',
+                        'stock_status',
+                        'order_statistics',
+                        'created_at',
+                        'updated_at',
+                    ],
                 ]);
     }
 
@@ -206,7 +303,7 @@ class ProductTest extends TestCase
     public function can_update_product()
     {
         $product = Product::create([
-            'name' => 'Original Name',
+            'name' => 'Original Product',
             'description' => 'Original Description',
             'price' => 99.99,
             'category' => 'Electronics',
@@ -216,8 +313,10 @@ class ProductTest extends TestCase
         ]);
 
         $updateData = [
-            'name' => 'Updated Name',
+            'name' => 'Updated Product',
+            'description' => 'Updated Description',
             'price' => 149.99,
+            'category' => 'Furniture',
             'stock_quantity' => 75,
         ];
 
@@ -233,9 +332,9 @@ class ProductTest extends TestCase
 
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
-            'name' => 'Updated Name',
+            'name' => 'Updated Product',
             'price' => 149.99,
-            'stock_quantity' => 75,
+            'category' => 'Furniture',
         ]);
     }
 
@@ -243,11 +342,11 @@ class ProductTest extends TestCase
     public function can_delete_product()
     {
         $product = Product::create([
-            'name' => 'To Delete',
-            'description' => 'To Delete Description',
-            'price' => 29.99,
-            'category' => 'Books',
-            'stock_quantity' => 100,
+            'name' => 'Product to Delete',
+            'description' => 'Description',
+            'price' => 99.99,
+            'category' => 'Electronics',
+            'stock_quantity' => 50,
             'sku' => 'SKU005',
             'created_by' => $this->admin->id,
         ]);
@@ -281,11 +380,11 @@ class ProductTest extends TestCase
         ]);
 
         Product::create([
-            'name' => 'Office Chair',
-            'description' => 'Comfortable chair',
-            'price' => 199.99,
-            'category' => 'Furniture',
-            'stock_quantity' => 25,
+            'name' => 'Desktop Computer',
+            'description' => 'Desktop workstation',
+            'price' => 1299.99,
+            'category' => 'Electronics',
+            'stock_quantity' => 5,
             'sku' => 'SKU007',
             'created_by' => $this->admin->id,
         ]);
@@ -306,20 +405,20 @@ class ProductTest extends TestCase
     {
         Product::create([
             'name' => 'Electronics Product',
-            'description' => 'Electronics Description',
-            'price' => 299.99,
+            'description' => 'Electronics description',
+            'price' => 199.99,
             'category' => 'Electronics',
-            'stock_quantity' => 15,
+            'stock_quantity' => 20,
             'sku' => 'SKU008',
             'created_by' => $this->admin->id,
         ]);
 
         Product::create([
             'name' => 'Furniture Product',
-            'description' => 'Furniture Description',
-            'price' => 399.99,
+            'description' => 'Furniture description',
+            'price' => 299.99,
             'category' => 'Furniture',
-            'stock_quantity' => 8,
+            'stock_quantity' => 15,
             'sku' => 'SKU009',
             'created_by' => $this->admin->id,
         ]);
@@ -366,7 +465,14 @@ class ProductTest extends TestCase
                 ->assertJson([
                     'success' => true,
                 ])
-                ->assertJsonCount(2, 'data');
+                ->assertJsonStructure([
+                    'data' => [
+                        '*' => [
+                            'category',
+                            'count',
+                        ],
+                    ],
+                ]);
     }
 
     /** @test */
@@ -374,8 +480,8 @@ class ProductTest extends TestCase
     {
         Product::create([
             'name' => 'Low Stock Product',
-            'description' => 'Low Stock Description',
-            'price' => 49.99,
+            'description' => 'Low stock description',
+            'price' => 99.99,
             'category' => 'Electronics',
             'stock_quantity' => 5,
             'sku' => 'SKU012',
@@ -383,9 +489,9 @@ class ProductTest extends TestCase
         ]);
 
         Product::create([
-            'name' => 'High Stock Product',
-            'description' => 'High Stock Description',
-            'price' => 79.99,
+            'name' => 'Normal Stock Product',
+            'description' => 'Normal stock description',
+            'price' => 149.99,
             'category' => 'Furniture',
             'stock_quantity' => 50,
             'sku' => 'SKU013',
@@ -407,11 +513,11 @@ class ProductTest extends TestCase
     public function can_update_product_stock()
     {
         $product = Product::create([
-            'name' => 'Stock Product',
-            'description' => 'Stock Description',
-            'price' => 89.99,
+            'name' => 'Stock Update Product',
+            'description' => 'Stock update description',
+            'price' => 99.99,
             'category' => 'Electronics',
-            'stock_quantity' => 20,
+            'stock_quantity' => 10,
             'sku' => 'SKU014',
             'created_by' => $this->admin->id,
         ]);
@@ -419,7 +525,7 @@ class ProductTest extends TestCase
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->adminToken,
         ])->patchJson("/api/products/{$product->id}/stock", [
-            'stock_quantity' => 35,
+            'stock_quantity' => 25,
         ]);
 
         $response->assertStatus(200)
@@ -430,7 +536,7 @@ class ProductTest extends TestCase
 
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
-            'stock_quantity' => 35,
+            'stock_quantity' => 25,
         ]);
     }
 

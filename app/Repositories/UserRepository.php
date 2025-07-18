@@ -14,7 +14,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function all(): Collection
     {
-        return User::all();
+        return User::with('roles')->get();
     }
 
     /**
@@ -22,7 +22,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function findById(int $id): ?User
     {
-        return User::find($id);
+        return User::with('roles')->find($id);
     }
 
     /**
@@ -30,7 +30,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function findByEmail(string $email): ?User
     {
-        return User::where('email', $email)->first();
+        return User::with('roles')->where('email', $email)->first();
     }
 
     /**
@@ -42,7 +42,14 @@ class UserRepository implements UserRepositoryInterface
             $data['password'] = Hash::make($data['password']);
         }
 
-        return User::create($data);
+        // Remove role from data as it will be handled by Spatie
+        $role = $data['role'] ?? 'employee';
+        unset($data['role']);
+
+        $user = User::create($data);
+        $user->assignRole($role);
+
+        return $user->load('roles');
     }
 
     /**
@@ -58,6 +65,13 @@ class UserRepository implements UserRepositoryInterface
 
         if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
+        }
+
+        // Handle role update with Spatie
+        if (isset($data['role'])) {
+            $role = $data['role'];
+            unset($data['role']);
+            $user->syncRoles([$role]);
         }
 
         return $user->update($data);
@@ -82,7 +96,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function getByRole(string $role): Collection
     {
-        return User::where('role', $role)->get();
+        return User::role($role)->get();
     }
 
     /**
@@ -90,7 +104,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function getActiveUsers(): Collection
     {
-        return User::where('is_active', true)->get();
+        return User::where('is_active', true)->with('roles')->get();
     }
 
     /**
@@ -106,5 +120,21 @@ class UserRepository implements UserRepositoryInterface
 
         $user->is_active = !$user->is_active;
         return $user->save();
+    }
+
+    /**
+     * Get users with specific permissions
+     */
+    public function getUsersWithPermission(string $permission): Collection
+    {
+        return User::permission($permission)->get();
+    }
+
+    /**
+     * Get users with dashboard access
+     */
+    public function getDashboardUsers(): Collection
+    {
+        return User::permission('access dashboard')->get();
     }
 }

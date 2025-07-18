@@ -49,14 +49,29 @@ interface OrderRepositoryInterface
     public function getByStatus(string $status): Collection;
 
     /**
+     * Get orders by status with pagination
+     */
+    public function getByStatusPaginated(string $status, int $perPage = 15): LengthAwarePaginator;
+
+    /**
      * Get orders by customer
      */
     public function getByCustomer(int $customerId): Collection;
 
     /**
+     * Get orders by customer with pagination
+     */
+    public function getByCustomerPaginated(int $customerId, int $perPage = 15): LengthAwarePaginator;
+
+    /**
      * Get orders assigned to user
      */
     public function getAssignedToUser(int $userId): Collection;
+
+    /**
+     * Get orders assigned to user with pagination
+     */
+    public function getAssignedToUserPaginated(int $userId, int $perPage = 15): LengthAwarePaginator;
 
     /**
      * Update order status

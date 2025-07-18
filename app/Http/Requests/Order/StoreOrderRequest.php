@@ -3,9 +3,11 @@
 namespace App\Http\Requests\Order;
 
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class StoreOrderRequest extends FormRequest
 {
@@ -14,8 +16,7 @@ class StoreOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $user = Auth::user();
-        return $user && $user->canManageOrders();
+        return true; // Authorization is handled by middleware
     }
 
     /**
@@ -26,7 +27,7 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_id' => ['required', 'integer', 'exists:users,id'],
+            'customer_id' => ['sometimes', 'integer', 'exists:users,id'],
             'shipping_address' => ['required', 'string'],
             'billing_address' => ['required', 'string'],
             'notes' => ['nullable', 'string'],
@@ -36,6 +37,37 @@ class StoreOrderRequest extends FormRequest
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.unit_price' => ['nullable', 'numeric', 'min:0'],
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            $user = Auth::user();
+            $isAdmin = $user && $user->hasRole('admin');
+
+            // For admins, customer_id is required
+            if ($isAdmin && !$this->input('customer_id')) {
+                $validator->errors()->add('customer_id', 'Customer ID is required for admin users.');
+            }
+
+            $items = $this->input('items', []);
+
+            foreach ($items as $index => $item) {
+                if (isset($item['product_id']) && isset($item['quantity'])) {
+                    $product = Product::find($item['product_id']);
+
+                    if ($product && $product->stock_quantity < $item['quantity']) {
+                        $validator->errors()->add(
+                            "items.{$index}.quantity",
+                            "Insufficient stock for product {$product->name}. Available: {$product->stock_quantity}"
+                        );
+                    }
+                }
+            }
+        });
     }
 
     /**

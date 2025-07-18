@@ -22,7 +22,17 @@ class OrderItemResource extends JsonResource
             'quantity' => $this->quantity,
             'unit_price' => $this->unit_price,
             'total_price' => $this->total_price,
+
+            // Related models
             'product' => new ProductResource($this->whenLoaded('product')),
+            'order' => new OrderResource($this->whenLoaded('order')),
+
+            // Calculated fields
+            'calculated_total' => $this->calculateTotalPrice(),
+            'savings' => $this->whenLoaded('product', function () {
+                return max(0, ($this->product->price - $this->unit_price) * $this->quantity);
+            }),
+
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

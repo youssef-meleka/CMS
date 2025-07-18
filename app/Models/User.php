@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +23,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
         'is_active',
     ];
 
@@ -48,19 +48,19 @@ class User extends Authenticatable
     ];
 
     /**
-     * Check if user has admin role
+     * Check if user is admin
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->hasRole('admin');
     }
 
     /**
-     * Check if user has manager role
+     * Check if user is manager
      */
     public function isManager(): bool
     {
-        return $this->role === 'manager';
+        return $this->hasRole('manager');
     }
 
     /**
@@ -68,7 +68,7 @@ class User extends Authenticatable
      */
     public function canManageProducts(): bool
     {
-        return in_array($this->role, ['admin', 'manager']);
+        return $this->hasPermissionTo('manage products');
     }
 
     /**
@@ -76,7 +76,23 @@ class User extends Authenticatable
      */
     public function canManageOrders(): bool
     {
-        return in_array($this->role, ['admin', 'manager']);
+        return $this->hasPermissionTo('manage orders');
+    }
+
+    /**
+     * Check if user can manage users
+     */
+    public function canManageUsers(): bool
+    {
+        return $this->hasPermissionTo('manage users');
+    }
+
+    /**
+     * Check if user can access dashboard
+     */
+    public function canAccessDashboard(): bool
+    {
+        return $this->hasPermissionTo('access dashboard');
     }
 
     /**
@@ -88,7 +104,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Orders placed by this user (as customer)
+     * Orders belonging to this user as customer
      */
     public function orders(): HasMany
     {
@@ -102,4 +118,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class, 'assigned_to');
     }
+
+    /**
+     * Get user's primary role name for backward compatibility
+     */
+    public function getRoleAttribute(): ?string
+    {
+        return $this->roles->first()?->name;
+    }
 }
+

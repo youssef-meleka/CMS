@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'min:8', 'confirmed',
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'],
-            'role' => ['sometimes', Rule::in(['admin', 'manager', 'employee'])],
+            'role' => ['sometimes', Rule::in(['admin', 'manager', 'employee', 'customer'])],
         ];
     }
 

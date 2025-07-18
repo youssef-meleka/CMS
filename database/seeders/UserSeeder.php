@@ -15,63 +15,91 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Create admin user
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@cms.com',
-            'password' => Hash::make("Password0!"),
-            'role' => 'admin',
-            'is_active' => true,
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@cms.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make("Password0!"),
+                'is_active' => true,
+            ]
+        );
+        if (!$admin->hasRole('admin')) {
+            $admin->assignRole('admin');
+        }
 
         // Create manager user
-        User::create([
-            'name' => 'Manager User',
-            'email' => 'manager@cms.com',
-            'password' => Hash::make("Password0!"),
-            'role' => 'manager',
-            'is_active' => true,
-        ]);
+        $manager = User::firstOrCreate(
+            ['email' => 'manager@cms.com'],
+            [
+                'name' => 'Manager User',
+                'password' => Hash::make("Password0!"),
+                'is_active' => true,
+            ]
+        );
+        if (!$manager->hasRole('manager')) {
+            $manager->assignRole('manager');
+        }
 
         // Create employee users
-        User::create([
-            'name' => 'Employee One',
-            'email' => 'employee1@cms.com',
-            'password' => Hash::make("Password0!"),
-            'role' => 'employee',
-            'is_active' => true,
-        ]);
+        $employee1 = User::firstOrCreate(
+            ['email' => 'employee1@cms.com'],
+            [
+                'name' => 'Employee One',
+                'password' => Hash::make("Password0!"),
+                'is_active' => true,
+            ]
+        );
+        if (!$employee1->hasRole('employee')) {
+            $employee1->assignRole('employee');
+        }
 
-        User::create([
-            'name' => 'Employee Two',
-            'email' => 'employee2@cms.com',
-            'password' => Hash::make("Password0!"),
-            'role' => 'employee',
-            'is_active' => true,
-        ]);
+        $employee2 = User::firstOrCreate(
+            ['email' => 'employee2@cms.com'],
+            [
+                'name' => 'Employee Two',
+                'password' => Hash::make("Password0!"),
+                'is_active' => true,
+            ]
+        );
+        if (!$employee2->hasRole('employee')) {
+            $employee2->assignRole('employee');
+        }
 
         // Create some customer users
-        User::create([
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => Hash::make("Password0!"),
-            'role' => 'employee',
-            'is_active' => true,
-        ]);
+        $customer1 = User::firstOrCreate(
+            ['email' => 'john@example.com'],
+            [
+                'name' => 'John Doe',
+                'password' => Hash::make("Password0!"),
+                'is_active' => true,
+            ]
+        );
+        if (!$customer1->hasRole('customer')) {
+            $customer1->assignRole('customer');
+        }
 
-        User::create([
-            'name' => 'Jane Smith',
-            'email' => 'jane@example.com',
-            'password' => Hash::make("Password0!"),
-            'role' => 'employee',
-            'is_active' => true,
-        ]);
+        $customer2 = User::firstOrCreate(
+            ['email' => 'jane@example.com'],
+            [
+                'name' => 'Jane Smith',
+                'password' => Hash::make("Password0!"),
+                'is_active' => true,
+            ]
+        );
+        if (!$customer2->hasRole('customer')) {
+            $customer2->assignRole('customer');
+        }
 
-        User::create([
-            'name' => 'Bob Johnson',
-            'email' => 'bob@example.com',
-            'password' => Hash::make("Password0!"),
-            'role' => 'employee',
-            'is_active' => true,
-        ]);
+        $customer3 = User::firstOrCreate(
+            ['email' => 'bob@example.com'],
+            [
+                'name' => 'Bob Johnson',
+                'password' => Hash::make("Password0!"),
+                'is_active' => true,
+            ]
+        );
+        if (!$customer3->hasRole('customer')) {
+            $customer3->assignRole('customer');
+        }
     }
 }

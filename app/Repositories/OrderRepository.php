@@ -92,6 +92,16 @@ class OrderRepository implements OrderRepositoryInterface
     }
 
     /**
+     * Get orders by status with pagination
+     */
+    public function getByStatusPaginated(string $status, int $perPage = 15): LengthAwarePaginator
+    {
+        return Order::byStatus($status)
+            ->with(['customer', 'assignedUser'])
+            ->paginate($perPage);
+    }
+
+    /**
      * Get orders by customer
      */
     public function getByCustomer(int $customerId): Collection
@@ -102,6 +112,16 @@ class OrderRepository implements OrderRepositoryInterface
     }
 
     /**
+     * Get orders by customer with pagination
+     */
+    public function getByCustomerPaginated(int $customerId, int $perPage = 15): LengthAwarePaginator
+    {
+        return Order::where('customer_id', $customerId)
+            ->with(['assignedUser', 'orderItems.product'])
+            ->paginate($perPage);
+    }
+
+    /**
      * Get orders assigned to user
      */
     public function getAssignedToUser(int $userId): Collection
@@ -109,6 +129,16 @@ class OrderRepository implements OrderRepositoryInterface
         return Order::assignedTo($userId)
             ->with(['customer', 'orderItems.product'])
             ->get();
+    }
+
+    /**
+     * Get orders assigned to user with pagination
+     */
+    public function getAssignedToUserPaginated(int $userId, int $perPage = 15): LengthAwarePaginator
+    {
+        return Order::assignedTo($userId)
+            ->with(['customer', 'orderItems.product'])
+            ->paginate($perPage);
     }
 
     /**

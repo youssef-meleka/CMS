@@ -40,57 +40,42 @@ class Order extends Model
         'delivered_at' => 'datetime',
     ];
 
-    /**
-     * Customer who placed this order
-     */
+
     public function customer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'customer_id');
     }
 
-    /**
-     * User assigned to handle this order
-     */
+
     public function assignedUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    /**
-     * Order items for this order
-     */
+
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    /**
-     * Check if order is pending
-     */
+
     public function isPending(): bool
     {
         return $this->status === 'pending';
     }
 
-    /**
-     * Check if order is shipped
-     */
+
     public function isShipped(): bool
     {
         return $this->status === 'shipped';
     }
 
-    /**
-     * Check if order is delivered
-     */
+
     public function isDelivered(): bool
     {
         return $this->status === 'delivered';
     }
 
-    /**
-     * Mark order as shipped
-     */
     public function markAsShipped(): bool
     {
         $this->status = 'shipped';
@@ -98,9 +83,7 @@ class Order extends Model
         return $this->save();
     }
 
-    /**
-     * Mark order as delivered
-     */
+
     public function markAsDelivered(): bool
     {
         $this->status = 'delivered';
@@ -108,34 +91,23 @@ class Order extends Model
         return $this->save();
     }
 
-    /**
-     * Assign order to user
-     */
     public function assignTo(User $user): bool
     {
         $this->assigned_to = $user->id;
         return $this->save();
     }
 
-    /**
-     * Generate unique order number
-     */
     public static function generateOrderNumber(): string
     {
         return 'ORD-' . strtoupper(uniqid());
     }
 
-    /**
-     * Scope for orders by status
-     */
+
     public function scopeByStatus($query, string $status)
     {
         return $query->where('status', $status);
     }
 
-    /**
-     * Scope for orders assigned to user
-     */
     public function scopeAssignedTo($query, int $userId)
     {
         return $query->where('assigned_to', $userId);

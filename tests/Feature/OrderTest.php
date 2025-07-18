@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 class OrderTest extends TestCase
@@ -17,40 +19,98 @@ class OrderTest extends TestCase
 
     protected User $admin;
     protected User $manager;
+    protected User $employee;
     protected User $customer;
     protected Product $product1;
     protected Product $product2;
     protected string $adminToken;
     protected string $managerToken;
+    protected string $employeeToken;
     protected string $customerToken;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->setupRolesAndPermissions();
+        $this->createUsers();
+        $this->createProducts();
+        $this->createTokens();
+    }
 
-        // Create users
+    private function setupRolesAndPermissions(): void
+    {
+        // Create permissions
+        $permissions = [
+            'access dashboard', 'manage users', 'manage products', 'manage orders',
+            'view products', 'view orders', 'view own orders', 'create products',
+            'edit products', 'delete products', 'create orders', 'edit orders',
+            'delete orders', 'update order status', 'assign orders', 'view statistics',
+            'manage product stock',
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        // Create roles with permissions
+        $admin = Role::firstOrCreate(['name' => 'admin']);
+        $admin->syncPermissions(Permission::all());
+
+        $manager = Role::firstOrCreate(['name' => 'manager']);
+        $manager->syncPermissions([
+            'view products', 'create products', 'edit products', 'delete products',
+            'manage product stock', 'view orders', 'create orders', 'edit orders',
+            'delete orders', 'update order status', 'assign orders', 'view statistics'
+        ]);
+
+        $employee = Role::firstOrCreate(['name' => 'employee']);
+        $employee->syncPermissions([
+            'view products', 'view own orders', 'create orders'
+        ]);
+
+        $customer = Role::firstOrCreate(['name' => 'customer']);
+        $customer->syncPermissions([
+            'view products', 'view own orders', 'create orders'
+        ]);
+    }
+
+    private function createUsers(): void
+    {
         $this->admin = User::create([
             'name' => 'Admin User',
             'email' => 'admin@test.com',
             'password' => Hash::make('Password0!'),
-            'role' => 'admin',
+            'is_active' => true,
         ]);
+        $this->admin->assignRole('admin');
 
         $this->manager = User::create([
             'name' => 'Manager User',
             'email' => 'manager@test.com',
             'password' => Hash::make('Password0!'),
-            'role' => 'manager',
+            'is_active' => true,
         ]);
+        $this->manager->assignRole('manager');
+
+        $this->employee = User::create([
+            'name' => 'Employee User',
+            'email' => 'employee@test.com',
+            'password' => Hash::make('Password0!'),
+            'is_active' => true,
+        ]);
+        $this->employee->assignRole('employee');
 
         $this->customer = User::create([
             'name' => 'Customer User',
             'email' => 'customer@test.com',
             'password' => Hash::make('Password0!'),
-            'role' => 'employee',
+            'is_active' => true,
         ]);
+        $this->customer->assignRole('customer');
+    }
 
-        // Create products
+    private function createProducts(): void
+    {
         $this->product1 = Product::create([
             'name' => 'Test Product 1',
             'description' => 'Test Description 1',
@@ -70,10 +130,13 @@ class OrderTest extends TestCase
             'sku' => 'SKU002',
             'created_by' => $this->admin->id,
         ]);
+    }
 
-        // Get tokens
+    private function createTokens(): void
+    {
         $this->adminToken = $this->admin->createToken('test-token')->plainTextToken;
         $this->managerToken = $this->manager->createToken('test-token')->plainTextToken;
+        $this->employeeToken = $this->employee->createToken('test-token')->plainTextToken;
         $this->customerToken = $this->customer->createToken('test-token')->plainTextToken;
     }
 
@@ -147,7 +210,7 @@ class OrderTest extends TestCase
     }
 
     /** @test */
-    public function employee_cannot_create_order()
+    public function employee_can_create_order()
     {
         $orderData = [
             'customer_id' => $this->customer->id,
@@ -162,10 +225,39 @@ class OrderTest extends TestCase
         ];
 
         $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->employeeToken,
+        ])->postJson('/api/orders', $orderData);
+
+        $response->assertStatus(201)
+                ->assertJson([
+                    'success' => true,
+                    'message' => 'Order created successfully',
+                ]);
+    }
+
+    /** @test */
+    public function customer_can_create_order()
+    {
+        $orderData = [
+            'shipping_address' => '321 Elm St, City, State 13579',
+            'billing_address' => '321 Elm St, City, State 13579',
+            'items' => [
+                [
+                    'product_id' => $this->product1->id,
+                    'quantity' => 1,
+                ],
+            ],
+        ];
+
+        $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->customerToken,
         ])->postJson('/api/orders', $orderData);
 
-        $response->assertStatus(403);
+        $response->assertStatus(201)
+                ->assertJson([
+                    'success' => true,
+                    'message' => 'Order created successfully',
+                ]);
     }
 
     /** @test */
@@ -225,6 +317,29 @@ class OrderTest extends TestCase
                         'order_number' => 'ORD-TEST003',
                         'status' => 'pending',
                     ],
+                ])
+                ->assertJsonStructure([
+                    'data' => [
+                        'id',
+                        'order_number',
+                        'customer_id',
+                        'total_amount',
+                        'status',
+                        'shipping_address',
+                        'billing_address',
+                        'notes',
+                        'assigned_to',
+                        'shipped_at',
+                        'delivered_at',
+                        'customer',
+                        'assigned_user',
+                        'order_items',
+                        'status_info',
+                        'statistics',
+                        'timeline',
+                        'created_at',
+                        'updated_at',
+                    ],
                 ]);
     }
 
@@ -242,7 +357,9 @@ class OrderTest extends TestCase
 
         $updateData = [
             'shipping_address' => 'Updated Address',
+            'billing_address' => 'Updated Address',
             'notes' => 'Updated notes',
+            'status' => 'processing',
         ];
 
         $response = $this->withHeaders([
@@ -258,7 +375,7 @@ class OrderTest extends TestCase
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
             'shipping_address' => 'Updated Address',
-            'notes' => 'Updated notes',
+            'status' => 'processing',
         ]);
     }
 
@@ -365,7 +482,7 @@ class OrderTest extends TestCase
             'order_number' => 'ORD-TEST009',
             'customer_id' => $this->customer->id,
             'total_amount' => 149.99,
-            'status' => 'shipped',
+            'status' => 'processing',
             'shipping_address' => '456 Oak Ave',
             'billing_address' => '456 Oak Ave',
         ]);
@@ -388,8 +505,9 @@ class OrderTest extends TestCase
             'name' => 'Customer 2',
             'email' => 'customer2@test.com',
             'password' => Hash::make('Password0!'),
-            'role' => 'employee',
+            'is_active' => true,
         ]);
+        $customer2->assignRole('customer');
 
         Order::create([
             'order_number' => 'ORD-TEST010',
@@ -404,7 +522,7 @@ class OrderTest extends TestCase
             'order_number' => 'ORD-TEST011',
             'customer_id' => $customer2->id,
             'total_amount' => 149.99,
-            'status' => 'pending',
+            'status' => 'processing',
             'shipping_address' => '456 Oak Ave',
             'billing_address' => '456 Oak Ave',
         ]);
@@ -436,7 +554,7 @@ class OrderTest extends TestCase
             'order_number' => 'ORD-TEST013',
             'customer_id' => $this->customer->id,
             'total_amount' => 149.99,
-            'status' => 'shipped',
+            'status' => 'processing',
             'shipping_address' => '456 Oak Ave',
             'billing_address' => '456 Oak Ave',
         ]);
@@ -457,11 +575,14 @@ class OrderTest extends TestCase
         $response->assertStatus(200)
                 ->assertJson([
                     'success' => true,
+                ])
+                ->assertJsonStructure([
                     'data' => [
-                        'total_orders' => 3,
-                        'pending_orders' => 1,
-                        'shipped_orders' => 1,
-                        'delivered_orders' => 1,
+                        'total_orders',
+                        'total_revenue',
+                        'orders_by_status',
+                        'average_order_value',
+                        'recent_orders',
                     ],
                 ]);
     }
@@ -476,6 +597,14 @@ class OrderTest extends TestCase
         $response->assertStatus(200)
                 ->assertJson([
                     'success' => true,
+                ])
+                ->assertJsonStructure([
+                    'data' => [
+                        '*' => [
+                            'value',
+                            'label',
+                        ],
+                    ],
                 ]);
     }
 
@@ -591,10 +720,10 @@ class OrderTest extends TestCase
     {
         $lowStockProduct = Product::create([
             'name' => 'Low Stock Product',
-            'description' => 'Low Stock Description',
-            'price' => 29.99,
+            'description' => 'Low stock description',
+            'price' => 99.99,
             'category' => 'Electronics',
-            'stock_quantity' => 1,
+            'stock_quantity' => 2,
             'sku' => 'SKU003',
             'created_by' => $this->admin->id,
         ]);
@@ -615,10 +744,7 @@ class OrderTest extends TestCase
             'Authorization' => 'Bearer ' . $this->adminToken,
         ])->postJson('/api/orders', $orderData);
 
-        $response->assertStatus(500)
-                ->assertJson([
-                    'success' => false,
-                    'message' => 'Failed to create order',
-                ]);
+        $response->assertStatus(422)
+                ->assertJsonValidationErrors(['items.0.quantity']);
     }
 }

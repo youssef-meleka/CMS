@@ -19,11 +19,12 @@ class DashboardAccess
             return redirect()->route('dashboard.login');
         }
 
+        /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        // Only admin and manager can access dashboard
-        if (!in_array($user->role, ['admin', 'manager'])) {
-            abort(403, 'Access denied. Insufficient permissions.');
+        // Check if user has permission to access dashboard
+        if (!$user->hasPermissionTo('access dashboard')) {
+            abort(403, 'Access denied. You do not have permission to access the dashboard.');
         }
 
         return $next($request);

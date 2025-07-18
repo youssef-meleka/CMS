@@ -34,25 +34,19 @@ class OrderItem extends Model
         'total_price' => 'decimal:2',
     ];
 
-    /**
-     * Order this item belongs to
-     */
+
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
-    /**
-     * Product this item represents
-     */
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    /**
-     * Calculate total price based on quantity and unit price
-     */
+
     public function calculateTotalPrice(): float
     {
         return $this->quantity * $this->unit_price;

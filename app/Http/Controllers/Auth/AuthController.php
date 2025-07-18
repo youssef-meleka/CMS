@@ -20,9 +20,6 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-    /**
-     * Register a new user
-     */
     public function register(RegisterRequest $request): JsonResponse
     {
         try {
@@ -44,9 +41,6 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * Login user
-     */
     public function login(LoginRequest $request): JsonResponse
     {
         try {
@@ -72,9 +66,7 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * Logout user
-     */
+
     public function logout(): JsonResponse
     {
         try {
@@ -98,9 +90,6 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * Get authenticated user
-     */
     public function account(): JsonResponse
     {
         try {

@@ -304,7 +304,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><span class="dropdown-item-text">{{ auth()->user()->email }}</span></li>
-                        <li><span class="dropdown-item-text text-muted">{{ ucfirst(auth()->user()->role) }}</span></li>
+                        <li><span class="dropdown-item-text text-muted">{{ ucfirst(auth()->user()->roles->first()->name ?? 'No Role') }}</span></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form method="POST" action="{{ route('dashboard.logout') }}">

@@ -241,23 +241,57 @@
                 <h5 class="mb-0"><i class="bi bi-shield-check"></i> Role Permissions</h5>
             </div>
             <div class="card-body">
-                @if($user->role === 'admin')
+                @php
+                    $userRole = $user->roles->first()?->name ?? 'No Role';
+                @endphp
+
+                @if($userRole === 'admin')
                     <div class="alert alert-danger">
                         <i class="bi bi-shield-fill"></i>
                         <strong>Admin Access</strong><br>
                         Full system access including user management, product management, and order management.
                     </div>
-                @elseif($user->role === 'manager')
+                @elseif($userRole === 'manager')
                     <div class="alert alert-warning">
                         <i class="bi bi-person-gear"></i>
                         <strong>Manager Access</strong><br>
                         Can manage products and orders. Has dashboard access but cannot manage users.
                     </div>
-                @else
+                @elseif($userRole === 'employee')
                     <div class="alert alert-success">
                         <i class="bi bi-person"></i>
-                        <strong>User Access</strong><br>
-                        Basic user with limited access. Can view assigned tasks and basic information.
+                        <strong>Employee Access</strong><br>
+                        Can view products and orders. Limited access to assigned tasks.
+                    </div>
+                @elseif($userRole === 'customer')
+                    <div class="alert alert-info">
+                        <i class="bi bi-person-circle"></i>
+                        <strong>Customer Access</strong><br>
+                        Can view products and their own orders. Basic customer access.
+                    </div>
+                @else
+                    <div class="alert alert-secondary">
+                        <i class="bi bi-question-circle"></i>
+                        <strong>No Role Assigned</strong><br>
+                        This user has no role assigned and may have limited access.
+                    </div>
+                @endif
+
+                @if($user->roles->isNotEmpty())
+                    <div class="mt-3">
+                        <h6>Current Roles:</h6>
+                        @foreach($user->roles as $role)
+                            <span class="badge bg-primary me-1">{{ $role->name }}</span>
+                        @endforeach
+                    </div>
+                @endif
+
+                @if($user->permissions->isNotEmpty())
+                    <div class="mt-3">
+                        <h6>Direct Permissions:</h6>
+                        @foreach($user->permissions as $permission)
+                            <span class="badge bg-success me-1">{{ $permission->name }}</span>
+                        @endforeach
                     </div>
                 @endif
             </div>

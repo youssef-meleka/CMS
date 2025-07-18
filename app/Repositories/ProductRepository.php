@@ -106,6 +106,26 @@ class ProductRepository implements ProductRepositoryInterface
     }
 
     /**
+     * Search products with pagination
+     */
+    public function searchPaginated(string $query, int $perPage = 15): LengthAwarePaginator
+    {
+        return Product::where('name', 'LIKE', "%{$query}%")
+            ->orWhere('description', 'LIKE', "%{$query}%")
+            ->orWhere('category', 'LIKE', "%{$query}%")
+            ->active()
+            ->paginate($perPage);
+    }
+
+    /**
+     * Get products by category with pagination
+     */
+    public function getByCategoryPaginated(string $category, int $perPage = 15): LengthAwarePaginator
+    {
+        return Product::byCategory($category)->active()->paginate($perPage);
+    }
+
+    /**
      * Get low stock products
      */
     public function getLowStockProducts(int $threshold = 10): Collection

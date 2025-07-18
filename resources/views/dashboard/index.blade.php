@@ -162,7 +162,7 @@
                     <div class="col-6">
                         <div class="border-end">
                             <h6 class="text-muted">Your Role</h6>
-                            <span class="badge bg-primary">{{ ucfirst(auth()->user()->role) }}</span>
+                            <span class="badge bg-primary">{{ ucfirst(auth()->user()->roles->first()->name ?? 'No Role') }}</span>
                         </div>
                     </div>
                     <div class="col-6">

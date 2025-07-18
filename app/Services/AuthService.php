@@ -18,17 +18,20 @@ class AuthService
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * Register a new user
-     */
     public function register(array $data): User
     {
-        return $this->userRepository->create($data);
+        $user = $this->userRepository->create($data);
+
+        // Assign default role if not specified
+        if (!isset($data['role'])) {
+            $user->assignRole('employee');
+        } else {
+            $user->assignRole($data['role']);
+        }
+
+        return $user;
     }
 
-    /**
-     * Authenticate user and return token
-     */
     public function login(array $credentials): array
     {
         $user = $this->userRepository->findByEmail($credentials['email']);
@@ -53,63 +56,91 @@ class AuthService
         ];
     }
 
-    /**
-     * Logout user
-     */
     public function logout(): bool
     {
+        /** @var User $user */
         $user = Auth::user();
 
         if (!$user) {
             throw new AuthenticationException('User not authenticated');
         }
 
-        $user->currentAccessToken()->delete();
+        // Delete all tokens for the user
+        $user->tokens()->delete();
         return true;
     }
 
-    /**
-     * Get authenticated user
-     */
     public function getAuthenticatedUser(): ?User
     {
         return Auth::user();
     }
 
-    /**
-     * Check if user has permission
-     */
     public function hasPermission(User $user, string $permission): bool
     {
-        return match ($permission) {
-            'manage_products' => $user->canManageProducts(),
-            'manage_orders' => $user->canManageOrders(),
-            'manage_users' => $user->isAdmin(),
-            'view_dashboard' => true,
-            default => false,
-        };
+        return $user->hasPermissionTo($permission);
     }
 
-    /**
-     * Check if user can access resource
-     */
     public function canAccessResource(User $user, string $resource, ?int $resourceId = null): bool
     {
         return match ($resource) {
-            'products' => $user->canManageProducts(),
-            'orders' => $user->canManageOrders(),
-            'users' => $user->isAdmin(),
-            'own_orders' => $resourceId ? $this->canAccessOwnOrder($user, $resourceId) : false,
+            'products' => $user->hasPermissionTo('manage products'),
+            'orders' => $user->hasPermissionTo('manage orders'),
+            'users' => $user->hasPermissionTo('manage users'),
+            'dashboard' => $user->hasPermissionTo('access dashboard'),
+            'own_orders' => $resourceId ? $this->canAccessOwnOrder($user, $resourceId) :
+                           $user->hasPermissionTo('view own orders'),
             default => false,
         };
     }
 
-    /**
-     * Check if user can access their own order
-     */
     private function canAccessOwnOrder(User $user, int $orderId): bool
     {
+        // Check if user has permission to view own orders and the order belongs to them
+        if (!$user->hasPermissionTo('view own orders')) {
+            return false;
+        }
+
         return $user->orders()->where('id', $orderId)->exists() ||
                $user->assignedOrders()->where('id', $orderId)->exists();
+    }
+
+    public function assignRole(User $user, string $role): bool
+    {
+        try {
+            $user->assignRole($role);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function removeRole(User $user, string $role): bool
+    {
+        try {
+            $user->removeRole($role);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function givePermission(User $user, string $permission): bool
+    {
+        try {
+            $user->givePermissionTo($permission);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function revokePermission(User $user, string $permission): bool
+    {
+        try {
+            $user->revokePermissionTo($permission);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

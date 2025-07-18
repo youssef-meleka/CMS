@@ -19,11 +19,15 @@ class OrderController extends Controller
     {
         $this->orderService = $orderService;
         $this->middleware('auth:sanctum');
+        $this->middleware('can:view orders')->only(['index', 'show', 'statuses']);
+        $this->middleware('can:create orders')->only(['store']);
+        $this->middleware('can:edit orders')->only(['update']);
+        $this->middleware('can:delete orders')->only(['destroy']);
+        $this->middleware('can:update order status')->only(['updateStatus']);
+        $this->middleware('can:assign orders')->only(['assignOrder']);
+        $this->middleware('can:view statistics')->only(['statistics']);
     }
 
-    /**
-     * Display a listing of orders
-     */
     public function index(Request $request): JsonResponse
     {
         try {
@@ -33,19 +37,27 @@ class OrderController extends Controller
             $assignedTo = $request->get('assigned_to');
 
             if ($status) {
-                $orders = $this->orderService->getOrdersByStatus($status);
+                $orders = $this->orderService->getOrdersByStatus($status, $perPage);
             } elseif ($customerId) {
-                $orders = $this->orderService->getOrdersByCustomer($customerId);
+                $orders = $this->orderService->getOrdersByCustomer($customerId, $perPage);
             } elseif ($assignedTo) {
-                $orders = $this->orderService->getOrdersAssignedToUser($assignedTo);
+                $orders = $this->orderService->getOrdersAssignedToUser($assignedTo, $perPage);
             } else {
                 $orders = $this->orderService->getPaginatedOrders($perPage);
             }
 
             return response()->json([
                 'success' => true,
-                'data' => OrderResource::collection($orders)
-            ], 200);
+                'data' => OrderResource::collection($orders->items()),
+                'pagination' => [
+                    'current_page' => $orders->currentPage(),
+                    'per_page' => $orders->perPage(),
+                    'total' => $orders->total(),
+                    'last_page' => $orders->lastPage(),
+                    'from' => $orders->firstItem(),
+                    'to' => $orders->lastItem(),
+                ]
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -55,9 +67,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Store a newly created order
-     */
     public function store(StoreOrderRequest $request): JsonResponse
     {
         try {
@@ -86,9 +95,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Display the specified order
-     */
     public function show(int $id): JsonResponse
     {
         try {
@@ -114,9 +120,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Update the specified order
-     */
     public function update(UpdateOrderRequest $request, int $id): JsonResponse
     {
         try {
@@ -145,9 +148,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Remove the specified order
-     */
     public function destroy(int $id): JsonResponse
     {
         try {
@@ -173,9 +173,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Update order status
-     */
     public function updateStatus(Request $request, int $id): JsonResponse
     {
         try {
@@ -205,9 +202,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Assign order to user
-     */
     public function assign(Request $request, int $id): JsonResponse
     {
         try {
@@ -237,9 +231,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Get order statistics
-     */
     public function statistics(): JsonResponse
     {
         try {
@@ -258,9 +249,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Get available order statuses
-     */
     public function statuses(): JsonResponse
     {
         try {
