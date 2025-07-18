@@ -7,6 +7,7 @@ A comprehensive Content Management System built with Laravel 10, featuring user 
 This project includes comprehensive documentation to help you get started and understand the system:
 
 - **[Backend Documentation](backend.md)** - Detailed explanation of the Laravel backend architecture, components, and implementation
+- **[Dashboard Documentation](dashboard.md)** - Complete guide to the CMS dashboard interface and features
 - **[Docker Setup Guide](docker.md)** - Step-by-step instructions for running the application with Docker
 - **[Testing Guide](testing.md)** - Comprehensive testing documentation and examples
 
@@ -67,9 +68,22 @@ For detailed architecture information, see **[Backend Documentation](backend.md)
 
 The system uses Laravel Sanctum for API authentication with three user roles:
 
-- **Admin** - Full access to all features
-- **Manager** - Product and order management
-- **User** - Basic access to products and orders
+- **Admin** - Full access to all features including dashboard and user management
+- **Manager** - Product and order management with dashboard access
+- **User** - Basic access to products and orders (API only)
+
+## 🖥️ Dashboard Interface
+
+The system includes a comprehensive web dashboard for administrators and managers:
+
+- **Modern UI** - Responsive design with Bootstrap 5
+- **User Management** - Create, edit, and manage users
+- **Product Management** - Full product catalog management
+- **Order Management** - Order tracking and status updates
+- **Statistics** - Real-time system analytics
+- **Role-Based Access** - Secure access control
+
+Access the dashboard at: `http://your-domain.com/dashboard/login`
 
 ## 📋 API Endpoints
 
