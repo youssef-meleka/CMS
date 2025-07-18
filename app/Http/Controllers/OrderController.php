@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
+use App\Http\Resources\OrderResource;
 use App\Repositories\UserRepository;
 use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
@@ -43,7 +44,7 @@ class OrderController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $orders
+                'data' => OrderResource::collection($orders)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -74,7 +75,7 @@ class OrderController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Order created successfully',
-                'data' => $order
+                'data' => new OrderResource($order)
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -102,7 +103,7 @@ class OrderController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $order
+                'data' => new OrderResource($order)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -133,7 +134,7 @@ class OrderController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Order updated successfully',
-                'data' => $order
+                'data' => new OrderResource($order)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

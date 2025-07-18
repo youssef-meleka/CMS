@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
@@ -31,7 +32,7 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'User registered successfully',
                 'data' => [
-                    'user' => $user,
+                    'user' => new UserResource($user),
                 ]
             ], 201);
         } catch (\Exception $e) {
@@ -115,7 +116,7 @@ class AuthController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'user' => $user
+                    'user' => new UserResource($user)
                 ]
             ], 200);
         } catch (\Exception $e) {

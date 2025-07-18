@@ -210,7 +210,7 @@ class OrderService
             'shipped_orders' => $orders->where('status', 'shipped')->count(),
             'delivered_orders' => $orders->where('status', 'delivered')->count(),
             'cancelled_orders' => $orders->where('status', 'cancelled')->count(),
-            'total_revenue' => $orders->where('status', '!=', 'cancelled')->sum('total_amount'),
+            'total_revenue' => round($orders->where('status', '!=', 'cancelled')->sum('total_amount'), 3),
         ];
     }
 
@@ -219,6 +219,6 @@ class OrderService
      */
     public function getAvailableStatuses(): array
     {
-        return ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+        return $this->orderRepository->all()->pluck('status')->unique()->values()->toArray();
     }
 }

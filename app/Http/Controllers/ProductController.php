@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class ProductController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $products
+                'data' => ProductResource::collection($products)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -64,7 +65,7 @@ class ProductController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Product created successfully',
-                'data' => $product
+                'data' => new ProductResource($product)
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -92,7 +93,7 @@ class ProductController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $product
+                'data' => new ProductResource($product)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -123,7 +124,7 @@ class ProductController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Product updated successfully',
-                'data' => $product
+                'data' => new ProductResource($product)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -194,7 +195,7 @@ class ProductController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $products
+                'data' => ProductResource::collection($products)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
