@@ -1,0 +1,2797 @@
+{
+	"info": {
+		"_postman_id": "56845f84-5870-472e-afe9-f19d2470be59",
+		"name": "CMS",
+		"description": "API collection for Content Management System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16523730"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"Password1!\",\n    \"password_confirmation\": \"Password1!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user"
+					},
+					"response": [
+						{
+							"name": "Register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"Password1!\",\n    \"password_confirmation\": \"Password1!\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:46:23 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:46:23 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"User registered successfully\",\n    \"data\": {\n        \"user\": {\n            \"id\": 8,\n            \"name\": \"Test User\",\n            \"email\": \"test@example.com\",\n            \"role\": null,\n            \"is_active\": null,\n            \"created_at\": \"2025-07-18T12:46:23.000000Z\",\n            \"updated_at\": \"2025-07-18T12:46:23.000000Z\"\n        }\n    }\n}"
+						},
+						{
+							"name": "Validation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"Password!\",\n    \"password_confirmation\": \"Password1!\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Unprocessable Content",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:04:17 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:04:17 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Password confirmation does not match (and 1 more error)\",\n    \"errors\": {\n        \"password\": [\n            \"Password confirmation does not match\",\n            \"Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"if (jsonData && jsonData.data && jsonData.data.token) {",
+									"    pm.environment.set(\"user_token\", jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"Password1!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login user and get token"
+					},
+					"response": [
+						{
+							"name": "Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"Password1!\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:46:36 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:46:36 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Login successful\",\n    \"data\": {\n        \"user\": {\n            \"id\": 8,\n            \"name\": \"Test User\",\n            \"email\": \"test@example.com\",\n            \"email_verified_at\": null,\n            \"role\": \"employee\",\n            \"is_active\": true,\n            \"created_at\": \"2025-07-18T12:46:23.000000Z\",\n            \"updated_at\": \"2025-07-18T12:46:23.000000Z\"\n        },\n        \"token\": \"1|Fpa2qNW6RlDDQ38HukIZboU3zjpRPVZbXoKPMtqdbd728a35\"\n    }\n}"
+						},
+						{
+							"name": "Validation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"admin@cms.com\",\n    \"password\": \"Password0\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Unprocessable Content",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:03:54 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:03:54 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character\",\n    \"errors\": {\n        \"password\": [\n            \"Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/account",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"account"
+							]
+						},
+						"description": "Get authenticated user information"
+					},
+					"response": [
+						{
+							"name": "Get Account",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/auth/account",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"account"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:50:08 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:50:08 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"user\": {\n            \"id\": 8,\n            \"name\": \"Test User\",\n            \"email\": \"test@example.com\",\n            \"role\": \"employee\",\n            \"is_active\": true,\n            \"created_at\": \"2025-07-18T12:46:23.000000Z\",\n            \"updated_at\": \"2025-07-18T12:46:23.000000Z\"\n        }\n    }\n}"
+						},
+						{
+							"name": "Validation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/auth/account",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"account"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:50:32 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:50:32 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Unauthenticated.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Logout user"
+					},
+					"response": [
+						{
+							"name": "Logout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/auth/logout",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:50:17 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:50:17 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Logout successful\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Authentication related endpoints"
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "List Products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/products?per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "keyword",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "electronics",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Get a list of all products"
+					},
+					"response": [
+						{
+							"name": "List Products",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/products?per_page=10",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products"
+									],
+									"query": [
+										{
+											"key": "per_page",
+											"value": "10"
+										},
+										{
+											"key": "search",
+											"value": "keyword",
+											"disabled": true
+										},
+										{
+											"key": "category",
+											"value": "electronics",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:51:41 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:51:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Laptop Computer\",\n            \"description\": \"High-performance laptop for business and gaming\",\n            \"price\": \"999.99\",\n            \"category\": \"Electronics\",\n            \"stock_quantity\": 50,\n            \"sku\": \"LAPTOP001\",\n            \"image_url\": \"https://example.com/laptop.jpg\",\n            \"is_active\": true,\n            \"created_by\": 1,\n            \"creator\": {\n                \"id\": 1,\n                \"name\": \"Admin User\",\n                \"email\": \"admin@cms.com\",\n                \"role\": \"admin\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-17T22:14:40.000000Z\",\n                \"updated_at\": \"2025-07-17T22:14:40.000000Z\"\n            },\n            \"created_at\": \"2025-07-17T22:14:41.000000Z\",\n            \"updated_at\": \"2025-07-17T22:14:41.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Wireless Mouse\",\n            \"description\": \"Ergonomic wireless mouse with precision tracking\",\n            \"price\": \"29.99\",\n            \"category\": \"Electronics\",\n            \"stock_quantity\": 100,\n            \"sku\": \"MOUSE001\",\n            \"image_url\": \"https://example.com/mouse.jpg\",\n            \"is_active\": true,\n            \"created_by\": 1,\n            \"creator\": {\n                \"id\": 1,\n                \"name\": \"Admin User\",\n                \"email\": \"admin@cms.com\",\n                \"role\": \"admin\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-17T22:14:40.000000Z\",\n                \"updated_at\": \"2025-07-17T22:14:40.000000Z\"\n            },\n            \"created_at\": \"2025-07-17T22:14:41.000000Z\",\n            \"updated_at\": \"2025-07-17T22:14:41.000000Z\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Office Chair\",\n            \"description\": \"Comfortable ergonomic office chair\",\n            \"price\": \"199.99\",\n            \"category\": \"Furniture\",\n            \"stock_quantity\": 25,\n            \"sku\": \"CHAIR001\",\n            \"image_url\": \"https://example.com/chair.jpg\",\n            \"is_active\": true,\n            \"created_by\": 1,\n            \"creator\": {\n                \"id\": 1,\n                \"name\": \"Admin User\",\n                \"email\": \"admin@cms.com\",\n                \"role\": \"admin\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-17T22:14:40.000000Z\",\n                \"updated_at\": \"2025-07-17T22:14:40.000000Z\"\n            },\n            \"created_at\": \"2025-07-17T22:14:41.000000Z\",\n            \"updated_at\": \"2025-07-17T22:14:41.000000Z\"\n        },\n        {\n            \"id\": 4,\n            \"name\": \"Desk Lamp\",\n            \"description\": \"LED desk lamp with adjustable brightness\",\n            \"price\": \"49.99\",\n            \"category\": \"Lighting\",\n            \"stock_quantity\": 75,\n            \"sku\": \"LAMP001\",\n            \"image_url\": \"https://example.com/lamp.jpg\",\n            \"is_active\": true,\n            \"created_by\": 1,\n            \"creator\": {\n                \"id\": 1,\n                \"name\": \"Admin User\",\n                \"email\": \"admin@cms.com\",\n                \"role\": \"admin\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-17T22:14:40.000000Z\",\n                \"updated_at\": \"2025-07-17T22:14:40.000000Z\"\n            },\n            \"created_at\": \"2025-07-17T22:14:41.000000Z\",\n            \"updated_at\": \"2025-07-17T22:14:41.000000Z\"\n        },\n        {\n            \"id\": 5,\n            \"name\": \"Notebook Set\",\n            \"description\": \"Set of 3 premium notebooks\",\n            \"price\": \"15.99\",\n            \"category\": \"Stationery\",\n            \"stock_quantity\": 200,\n            \"sku\": \"NOTEBOOK001\",\n            \"image_url\": \"https://example.com/notebook.jpg\",\n            \"is_active\": true,\n            \"created_by\": 1,\n            \"creator\": {\n                \"id\": 1,\n                \"name\": \"Admin User\",\n                \"email\": \"admin@cms.com\",\n                \"role\": \"admin\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-17T22:14:40.000000Z\",\n                \"updated_at\": \"2025-07-17T22:14:40.000000Z\"\n            },\n            \"created_at\": \"2025-07-17T22:14:41.000000Z\",\n            \"updated_at\": \"2025-07-17T22:14:41.000000Z\"\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Bluetooth Headphones\",\n            \"description\": \"Noise-cancelling wireless headphones\",\n            \"price\": \"149.99\",\n            \"category\": \"Electronics\",\n            \"stock_quantity\": 30,\n            \"sku\": \"HEADPHONES001\",\n            \"image_url\": \"https://example.com/headphones.jpg\",\n            \"is_active\": true,\n            \"created_by\": 1,\n            \"creator\": {\n                \"id\": 1,\n                \"name\": \"Admin User\",\n                \"email\": \"admin@cms.com\",\n                \"role\": \"admin\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-17T22:14:40.000000Z\",\n                \"updated_at\": \"2025-07-17T22:14:40.000000Z\"\n            },\n            \"created_at\": \"2025-07-17T22:14:41.000000Z\",\n            \"updated_at\": \"2025-07-17T22:14:41.000000Z\"\n        },\n        {\n            \"id\": 7,\n            \"name\": \"Standing Desk\",\n            \"description\": \"Adjustable height standing desk\",\n            \"price\": \"399.99\",\n            \"category\": \"Furniture\",\n            \"stock_quantity\": 15,\n            \"sku\": \"DESK001\",\n            \"image_url\": \"https://example.com/desk.jpg\",\n            \"is_active\": true,\n            \"created_by\": 1,\n            \"creator\": {\n                \"id\": 1,\n                \"name\": \"Admin User\",\n                \"email\": \"admin@cms.com\",\n                \"role\": \"admin\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-17T22:14:40.000000Z\",\n                \"updated_at\": \"2025-07-17T22:14:40.000000Z\"\n            },\n            \"created_at\": \"2025-07-17T22:14:41.000000Z\",\n            \"updated_at\": \"2025-07-17T22:14:41.000000Z\"\n        },\n        {\n            \"id\": 8,\n            \"name\": \"Wireless Keyboard\",\n            \"description\": \"Mechanical wireless keyboard\",\n            \"price\": \"79.99\",\n            \"category\": \"Electronics\",\n            \"stock_quantity\": 60,\n            \"sku\": \"KEYBOARD001\",\n            \"image_url\": \"https://example.com/keyboard.jpg\",\n            \"is_active\": true,\n            \"created_by\": 1,\n            \"creator\": {\n                \"id\": 1,\n                \"name\": \"Admin User\",\n                \"email\": \"admin@cms.com\",\n                \"role\": \"admin\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-17T22:14:40.000000Z\",\n                \"updated_at\": \"2025-07-17T22:14:40.000000Z\"\n            },\n            \"created_at\": \"2025-07-17T22:14:41.000000Z\",\n            \"updated_at\": \"2025-07-17T22:14:41.000000Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/products/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						},
+						"description": "Get a specific product by ID"
+					},
+					"response": [
+						{
+							"name": "Get Product",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/products/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:52:18 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:52:18 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"Laptop Computer\",\n        \"description\": \"High-performance laptop for business and gaming\",\n        \"price\": \"999.99\",\n        \"category\": \"Electronics\",\n        \"stock_quantity\": 50,\n        \"sku\": \"LAPTOP001\",\n        \"image_url\": \"https://example.com/laptop.jpg\",\n        \"is_active\": true,\n        \"created_by\": 1,\n        \"creator\": {\n            \"id\": 1,\n            \"name\": \"Admin User\",\n            \"email\": \"admin@cms.com\",\n            \"role\": \"admin\",\n            \"is_active\": true,\n            \"created_at\": \"2025-07-17T22:14:40.000000Z\",\n            \"updated_at\": \"2025-07-17T22:14:40.000000Z\"\n        },\n        \"created_at\": \"2025-07-17T22:14:41.000000Z\",\n        \"updated_at\": \"2025-07-17T22:14:41.000000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test Product\",\n    \"description\": \"This is a test product\",\n    \"price\": 99.99,\n    \"category\": \"electronics\",\n    \"stock_quantity\": 100,\n    \"image_url\": \"https://example.com/image.jpg\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						},
+						"description": "Create a new product"
+					},
+					"response": [
+						{
+							"name": "Create Product",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Test Product\",\n    \"description\": \"This is a test product\",\n    \"price\": 99.99,\n    \"category\": \"electronics\",\n    \"stock_quantity\": 100,\n    \"image_url\": \"https://example.com/image.jpg\",\n    \"is_active\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/products",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:05:11 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:05:11 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Product created successfully\",\n    \"data\": {\n        \"id\": 9,\n        \"name\": \"Test Product\",\n        \"description\": \"This is a test product\",\n        \"price\": \"99.99\",\n        \"category\": \"electronics\",\n        \"stock_quantity\": 100,\n        \"sku\": \"TESTPROD\",\n        \"image_url\": \"https://example.com/image.jpg\",\n        \"is_active\": true,\n        \"created_by\": 1,\n        \"created_at\": \"2025-07-18T13:05:11.000000Z\",\n        \"updated_at\": \"2025-07-18T13:05:11.000000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Product\",\n    \"description\": \"This is an updated product\",\n    \"price\": 149.99,\n    \"category\": \"electronics\",\n    \"stock_quantity\": 50\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/products/9",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"9"
+							]
+						},
+						"description": "Update an existing product"
+					},
+					"response": [
+						{
+							"name": "Update Product",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Updated Product\",\n    \"description\": \"This is an updated product\",\n    \"price\": 149.99,\n    \"category\": \"electronics\",\n    \"stock_quantity\": 50\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/products/9",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"9"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:08:55 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:08:55 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Product updated successfully\",\n    \"data\": {\n        \"id\": 9,\n        \"name\": \"Updated Product\",\n        \"description\": \"This is an updated product\",\n        \"price\": \"149.99\",\n        \"category\": \"electronics\",\n        \"stock_quantity\": 50,\n        \"sku\": \"TESTPROD\",\n        \"image_url\": \"https://example.com/image.jpg\",\n        \"is_active\": true,\n        \"created_by\": 1,\n        \"creator\": {\n            \"id\": 1,\n            \"name\": \"Admin User\",\n            \"email\": \"admin@cms.com\",\n            \"role\": \"admin\",\n            \"is_active\": true,\n            \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n            \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n        },\n        \"created_at\": \"2025-07-18T13:05:11.000000Z\",\n        \"updated_at\": \"2025-07-18T13:08:55.000000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/products/6",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"6"
+							]
+						},
+						"description": "Delete a product"
+					},
+					"response": [
+						{
+							"name": "Delete Product",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/products/6",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"6"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:55:17 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:55:17 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Product deleted successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Product Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/products/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"categories"
+							]
+						},
+						"description": "Get list of product categories"
+					},
+					"response": [
+						{
+							"name": "Get Product Categories",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/products/categories",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"categories"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:55:32 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:55:32 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": [\n        \"Electronics\",\n        \"Furniture\",\n        \"Lighting\",\n        \"Stationery\"\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Low Stock Products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/products/low-stock?threshold=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"low-stock"
+							],
+							"query": [
+								{
+									"key": "threshold",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get products with low stock"
+					},
+					"response": [
+						{
+							"name": "Get Low Stock Products",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/products/low-stock?threshold=20",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"low-stock"
+									],
+									"query": [
+										{
+											"key": "threshold",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:55:54 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:55:54 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "57"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"id\": 7,\n            \"name\": \"Standing Desk\",\n            \"description\": \"Adjustable height standing desk\",\n            \"price\": \"399.99\",\n            \"category\": \"Furniture\",\n            \"stock_quantity\": 15,\n            \"sku\": \"DESK001\",\n            \"image_url\": \"https://example.com/desk.jpg\",\n            \"is_active\": true,\n            \"created_by\": 1,\n            \"created_at\": \"2025-07-17T22:14:41.000000Z\",\n            \"updated_at\": \"2025-07-17T22:14:41.000000Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Product Stock",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"stock_quantity\": 75\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/products/7/stock",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"7",
+								"stock"
+							]
+						},
+						"description": "Update product stock quantity"
+					},
+					"response": [
+						{
+							"name": "Update Product Stock",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"stock_quantity\": 75\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/products/7/stock",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"7",
+										"stock"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:56:29 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 12:56:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Stock updated successfully\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Product management endpoints"
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "List Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders?per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "pending",
+									"disabled": true
+								},
+								{
+									"key": "customer_id",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "assigned_to",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Get a list of all orders"
+					},
+					"response": [
+						{
+							"name": "List Orders",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/orders?per_page=10",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders"
+									],
+									"query": [
+										{
+											"key": "per_page",
+											"value": "10"
+										},
+										{
+											"key": "status",
+											"value": "pending",
+											"disabled": true
+										},
+										{
+											"key": "customer_id",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "assigned_to",
+											"value": "2",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:09:42 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:09:42 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"order_number\": \"ORD-687A4613916A5\",\n            \"customer_id\": 3,\n            \"total_amount\": \"1015.98\",\n            \"status\": \"pending\",\n            \"shipping_address\": \"123 Main St, City, State 12345\",\n            \"billing_address\": \"123 Main St, City, State 12345\",\n            \"notes\": \"Sample order for Employee One\",\n            \"assigned_to\": 2,\n            \"shipped_at\": null,\n            \"delivered_at\": null,\n            \"customer\": {\n                \"id\": 3,\n                \"name\": \"Employee One\",\n                \"email\": \"employee1@cms.com\",\n                \"role\": \"employee\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n            },\n            \"assigned_user\": {\n                \"id\": 2,\n                \"name\": \"Manager User\",\n                \"email\": \"manager@cms.com\",\n                \"role\": \"manager\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n            },\n            \"order_items\": [\n                {\n                    \"id\": 1,\n                    \"order_id\": 1,\n                    \"product_id\": 1,\n                    \"quantity\": 1,\n                    \"unit_price\": \"999.99\",\n                    \"total_price\": \"999.99\",\n                    \"product\": {\n                        \"id\": 1,\n                        \"name\": \"Laptop Computer\",\n                        \"description\": \"High-performance laptop for business and gaming\",\n                        \"price\": \"999.99\",\n                        \"category\": \"Electronics\",\n                        \"stock_quantity\": 50,\n                        \"sku\": \"LAPTOP001\",\n                        \"image_url\": \"https://example.com/laptop.jpg\",\n                        \"is_active\": true,\n                        \"created_by\": 1,\n                        \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                        \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                    },\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                },\n                {\n                    \"id\": 2,\n                    \"order_id\": 1,\n                    \"product_id\": 5,\n                    \"quantity\": 1,\n                    \"unit_price\": \"15.99\",\n                    \"total_price\": \"15.99\",\n                    \"product\": {\n                        \"id\": 5,\n                        \"name\": \"Notebook Set\",\n                        \"description\": \"Set of 3 premium notebooks\",\n                        \"price\": \"15.99\",\n                        \"category\": \"Stationery\",\n                        \"stock_quantity\": 200,\n                        \"sku\": \"NOTEBOOK001\",\n                        \"image_url\": \"https://example.com/notebook.jpg\",\n                        \"is_active\": true,\n                        \"created_by\": 1,\n                        \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                        \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                    },\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                }\n            ],\n            \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n            \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"order_number\": \"ORD-687A46139978B\",\n            \"customer_id\": 4,\n            \"total_amount\": \"2047.95\",\n            \"status\": \"processing\",\n            \"shipping_address\": \"123 Main St, City, State 12345\",\n            \"billing_address\": \"123 Main St, City, State 12345\",\n            \"notes\": \"Sample order for Employee Two\",\n            \"assigned_to\": 2,\n            \"shipped_at\": null,\n            \"delivered_at\": null,\n            \"customer\": {\n                \"id\": 4,\n                \"name\": \"Employee Two\",\n                \"email\": \"employee2@cms.com\",\n                \"role\": \"employee\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n            },\n            \"assigned_user\": {\n                \"id\": 2,\n                \"name\": \"Manager User\",\n                \"email\": \"manager@cms.com\",\n                \"role\": \"manager\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n            },\n            \"order_items\": [\n                {\n                    \"id\": 3,\n                    \"order_id\": 2,\n                    \"product_id\": 1,\n                    \"quantity\": 2,\n                    \"unit_price\": \"999.99\",\n                    \"total_price\": \"1999.98\",\n                    \"product\": {\n                        \"id\": 1,\n                        \"name\": \"Laptop Computer\",\n                        \"description\": \"High-performance laptop for business and gaming\",\n                        \"price\": \"999.99\",\n                        \"category\": \"Electronics\",\n                        \"stock_quantity\": 50,\n                        \"sku\": \"LAPTOP001\",\n                        \"image_url\": \"https://example.com/laptop.jpg\",\n                        \"is_active\": true,\n                        \"created_by\": 1,\n                        \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                        \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                    },\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                },\n                {\n                    \"id\": 4,\n                    \"order_id\": 2,\n                    \"product_id\": 5,\n                    \"quantity\": 3,\n                    \"unit_price\": \"15.99\",\n                    \"total_price\": \"47.97\",\n                    \"product\": {\n                        \"id\": 5,\n                        \"name\": \"Notebook Set\",\n                        \"description\": \"Set of 3 premium notebooks\",\n                        \"price\": \"15.99\",\n                        \"category\": \"Stationery\",\n                        \"stock_quantity\": 200,\n                        \"sku\": \"NOTEBOOK001\",\n                        \"image_url\": \"https://example.com/notebook.jpg\",\n                        \"is_active\": true,\n                        \"created_by\": 1,\n                        \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                        \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                    },\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                }\n            ],\n            \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n            \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n        },\n        {\n            \"id\": 3,\n            \"order_number\": \"ORD-687A46139D666\",\n            \"customer_id\": 5,\n            \"total_amount\": \"3659.92\",\n            \"status\": \"shipped\",\n            \"shipping_address\": \"123 Main St, City, State 12345\",\n            \"billing_address\": \"123 Main St, City, State 12345\",\n            \"notes\": \"Sample order for John Doe\",\n            \"assigned_to\": 2,\n            \"shipped_at\": null,\n            \"delivered_at\": null,\n            \"customer\": {\n                \"id\": 5,\n                \"name\": \"John Doe\",\n                \"email\": \"john@example.com\",\n                \"role\": \"employee\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n            },\n            \"assigned_user\": {\n                \"id\": 2,\n                \"name\": \"Manager User\",\n                \"email\": \"manager@cms.com\",\n                \"role\": \"manager\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n            },\n            \"order_items\": [\n                {\n                    \"id\": 5,\n                    \"order_id\": 3,\n                    \"product_id\": 1,\n                    \"quantity\": 3,\n                    \"unit_price\": \"999.99\",\n                    \"total_price\": \"2999.97\",\n                    \"product\": {\n                        \"id\": 1,\n                        \"name\": \"Laptop Computer\",\n                        \"description\": \"High-performance laptop for business and gaming\",\n                        \"price\": \"999.99\",\n                        \"category\": \"Electronics\",\n                        \"stock_quantity\": 50,\n                        \"sku\": \"LAPTOP001\",\n                        \"image_url\": \"https://example.com/laptop.jpg\",\n                        \"is_active\": true,\n                        \"created_by\": 1,\n                        \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                        \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                    },\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                },\n                {\n                    \"id\": 6,\n                    \"order_id\": 3,\n                    \"product_id\": 2,\n                    \"quantity\": 2,\n                    \"unit_price\": \"29.99\",\n                    \"total_price\": \"59.98\",\n                    \"product\": {\n                        \"id\": 2,\n                        \"name\": \"Wireless Mouse\",\n                        \"description\": \"Ergonomic wireless mouse with precision tracking\",\n                        \"price\": \"29.99\",\n                        \"category\": \"Electronics\",\n                        \"stock_quantity\": 100,\n                        \"sku\": \"MOUSE001\",\n                        \"image_url\": \"https://example.com/mouse.jpg\",\n                        \"is_active\": true,\n                        \"created_by\": 1,\n                        \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                        \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                    },\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                },\n                {\n                    \"id\": 7,\n                    \"order_id\": 3,\n                    \"product_id\": 3,\n                    \"quantity\": 3,\n                    \"unit_price\": \"199.99\",\n                    \"total_price\": \"599.97\",\n                    \"product\": {\n                        \"id\": 3,\n                        \"name\": \"Office Chair\",\n                        \"description\": \"Comfortable ergonomic office chair\",\n                        \"price\": \"199.99\",\n                        \"category\": \"Furniture\",\n                        \"stock_quantity\": 25,\n                        \"sku\": \"CHAIR001\",\n                        \"image_url\": \"https://example.com/chair.jpg\",\n                        \"is_active\": true,\n                        \"created_by\": 1,\n                        \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                        \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                    },\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                }\n            ],\n            \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n            \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n        },\n        {\n            \"id\": 4,\n            \"order_number\": \"ORD-687A4613A16D2\",\n            \"customer_id\": 3,\n            \"total_amount\": \"15.99\",\n            \"status\": \"delivered\",\n            \"shipping_address\": \"456 Oak Ave, City, State 54321\",\n            \"billing_address\": \"456 Oak Ave, City, State 54321\",\n            \"notes\": \"Additional sample order\",\n            \"assigned_to\": 2,\n            \"shipped_at\": \"2025-07-13T13:03:15.000000Z\",\n            \"delivered_at\": \"2025-07-16T13:03:15.000000Z\",\n            \"customer\": {\n                \"id\": 3,\n                \"name\": \"Employee One\",\n                \"email\": \"employee1@cms.com\",\n                \"role\": \"employee\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n            },\n            \"assigned_user\": {\n                \"id\": 2,\n                \"name\": \"Manager User\",\n                \"email\": \"manager@cms.com\",\n                \"role\": \"manager\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n            },\n            \"order_items\": [\n                {\n                    \"id\": 8,\n                    \"order_id\": 4,\n                    \"product_id\": 5,\n                    \"quantity\": 1,\n                    \"unit_price\": \"15.99\",\n                    \"total_price\": \"15.99\",\n                    \"product\": {\n                        \"id\": 5,\n                        \"name\": \"Notebook Set\",\n                        \"description\": \"Set of 3 premium notebooks\",\n                        \"price\": \"15.99\",\n                        \"category\": \"Stationery\",\n                        \"stock_quantity\": 200,\n                        \"sku\": \"NOTEBOOK001\",\n                        \"image_url\": \"https://example.com/notebook.jpg\",\n                        \"is_active\": true,\n                        \"created_by\": 1,\n                        \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                        \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                    },\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                }\n            ],\n            \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n            \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n        },\n        {\n            \"id\": 5,\n            \"order_number\": \"ORD-687A4613A3B5C\",\n            \"customer_id\": 5,\n            \"total_amount\": \"0.00\",\n            \"status\": \"cancelled\",\n            \"shipping_address\": \"456 Oak Ave, City, State 54321\",\n            \"billing_address\": \"456 Oak Ave, City, State 54321\",\n            \"notes\": \"Customer requested cancellation\",\n            \"assigned_to\": 2,\n            \"shipped_at\": null,\n            \"delivered_at\": null,\n            \"customer\": {\n                \"id\": 5,\n                \"name\": \"John Doe\",\n                \"email\": \"john@example.com\",\n                \"role\": \"employee\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n            },\n            \"assigned_user\": {\n                \"id\": 2,\n                \"name\": \"Manager User\",\n                \"email\": \"manager@cms.com\",\n                \"role\": \"manager\",\n                \"is_active\": true,\n                \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n            },\n            \"order_items\": [],\n            \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n            \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1"
+							]
+						},
+						"description": "Get a specific order by ID"
+					},
+					"response": [
+						{
+							"name": "Get Order",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/orders/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:10:16 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:10:16 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 1,\n        \"order_number\": \"ORD-687A4613916A5\",\n        \"customer_id\": 3,\n        \"total_amount\": \"1015.98\",\n        \"status\": \"pending\",\n        \"shipping_address\": \"123 Main St, City, State 12345\",\n        \"billing_address\": \"123 Main St, City, State 12345\",\n        \"notes\": \"Sample order for Employee One\",\n        \"assigned_to\": 2,\n        \"shipped_at\": null,\n        \"delivered_at\": null,\n        \"customer\": {\n            \"id\": 3,\n            \"name\": \"Employee One\",\n            \"email\": \"employee1@cms.com\",\n            \"role\": \"employee\",\n            \"is_active\": true,\n            \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n            \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n        },\n        \"assigned_user\": {\n            \"id\": 2,\n            \"name\": \"Manager User\",\n            \"email\": \"manager@cms.com\",\n            \"role\": \"manager\",\n            \"is_active\": true,\n            \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n            \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n        },\n        \"order_items\": [\n            {\n                \"id\": 1,\n                \"order_id\": 1,\n                \"product_id\": 1,\n                \"quantity\": 1,\n                \"unit_price\": \"999.99\",\n                \"total_price\": \"999.99\",\n                \"product\": {\n                    \"id\": 1,\n                    \"name\": \"Laptop Computer\",\n                    \"description\": \"High-performance laptop for business and gaming\",\n                    \"price\": \"999.99\",\n                    \"category\": \"Electronics\",\n                    \"stock_quantity\": 50,\n                    \"sku\": \"LAPTOP001\",\n                    \"image_url\": \"https://example.com/laptop.jpg\",\n                    \"is_active\": true,\n                    \"created_by\": 1,\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                },\n                \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n            },\n            {\n                \"id\": 2,\n                \"order_id\": 1,\n                \"product_id\": 5,\n                \"quantity\": 1,\n                \"unit_price\": \"15.99\",\n                \"total_price\": \"15.99\",\n                \"product\": {\n                    \"id\": 5,\n                    \"name\": \"Notebook Set\",\n                    \"description\": \"Set of 3 premium notebooks\",\n                    \"price\": \"15.99\",\n                    \"category\": \"Stationery\",\n                    \"stock_quantity\": 200,\n                    \"sku\": \"NOTEBOOK001\",\n                    \"image_url\": \"https://example.com/notebook.jpg\",\n                    \"is_active\": true,\n                    \"created_by\": 1,\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n                },\n                \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n            }\n        ],\n        \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n        \"updated_at\": \"2025-07-18T13:03:15.000000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customer_id\": 1,\n    \"shipping_address\": \"123 Main St, City, Country\",\n    \"billing_address\": \"123 Main St, City, Country\",\n    \"notes\": \"Please deliver to the front door\",\n    \"items\": [\n        {\n            \"product_id\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"product_id\": 2,\n            \"quantity\": 1\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						},
+						"description": "Create a new order"
+					},
+					"response": [
+						{
+							"name": "Create Order",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"customer_id\": 1,\n    \"shipping_address\": \"123 Main St, City, Country\",\n    \"billing_address\": \"123 Main St, City, Country\",\n    \"notes\": \"Please deliver to the front door\",\n    \"items\": [\n        {\n            \"product_id\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"product_id\": 2,\n            \"quantity\": 1\n        }\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/orders",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:13:46 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:13:46 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Order created successfully\",\n    \"data\": {\n        \"id\": 6,\n        \"order_number\": \"ORD-687A488ACCDCD\",\n        \"customer_id\": 1,\n        \"total_amount\": \"2029.97\",\n        \"status\": \"pending\",\n        \"shipping_address\": \"123 Main St, City, Country\",\n        \"billing_address\": \"123 Main St, City, Country\",\n        \"notes\": \"Please deliver to the front door\",\n        \"assigned_to\": null,\n        \"shipped_at\": null,\n        \"delivered_at\": null,\n        \"created_at\": \"2025-07-18T13:13:46.000000Z\",\n        \"updated_at\": \"2025-07-18T13:13:46.000000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"shipping_address\": \"456 New St, City, Country\",\n    \"billing_address\": \"456 New St, City, Country\",\n    \"notes\": \"Updated delivery instructions\",\n    \"status\": \"processing\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/7",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"7"
+							]
+						},
+						"description": "Update an existing order"
+					},
+					"response": [
+						{
+							"name": "Update Order",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"shipping_address\": \"456 New St, City, Country\",\n    \"billing_address\": \"456 New St, City, Country\",\n    \"notes\": \"Updated delivery instructions\",\n    \"status\": \"processing\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/orders/7",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders",
+										"7"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:14:13 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:14:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "57"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Order updated successfully\",\n    \"data\": {\n        \"id\": 7,\n        \"order_number\": \"ORD-687A4895CEF10\",\n        \"customer_id\": 1,\n        \"total_amount\": \"2029.97\",\n        \"status\": \"processing\",\n        \"shipping_address\": \"456 New St, City, Country\",\n        \"billing_address\": \"456 New St, City, Country\",\n        \"notes\": \"Updated delivery instructions\",\n        \"assigned_to\": null,\n        \"shipped_at\": null,\n        \"delivered_at\": null,\n        \"customer\": {\n            \"id\": 1,\n            \"name\": \"Admin User\",\n            \"email\": \"admin@cms.com\",\n            \"role\": \"admin\",\n            \"is_active\": true,\n            \"created_at\": \"2025-07-18T13:03:14.000000Z\",\n            \"updated_at\": \"2025-07-18T13:03:14.000000Z\"\n        },\n        \"assigned_user\": null,\n        \"order_items\": [\n            {\n                \"id\": 11,\n                \"order_id\": 7,\n                \"product_id\": 1,\n                \"quantity\": 2,\n                \"unit_price\": \"999.99\",\n                \"total_price\": \"1999.98\",\n                \"product\": {\n                    \"id\": 1,\n                    \"name\": \"Laptop Computer\",\n                    \"description\": \"High-performance laptop for business and gaming\",\n                    \"price\": \"999.99\",\n                    \"category\": \"Electronics\",\n                    \"stock_quantity\": 46,\n                    \"sku\": \"LAPTOP001\",\n                    \"image_url\": \"https://example.com/laptop.jpg\",\n                    \"is_active\": true,\n                    \"created_by\": 1,\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:13:57.000000Z\"\n                },\n                \"created_at\": \"2025-07-18T13:13:57.000000Z\",\n                \"updated_at\": \"2025-07-18T13:13:57.000000Z\"\n            },\n            {\n                \"id\": 12,\n                \"order_id\": 7,\n                \"product_id\": 2,\n                \"quantity\": 1,\n                \"unit_price\": \"29.99\",\n                \"total_price\": \"29.99\",\n                \"product\": {\n                    \"id\": 2,\n                    \"name\": \"Wireless Mouse\",\n                    \"description\": \"Ergonomic wireless mouse with precision tracking\",\n                    \"price\": \"29.99\",\n                    \"category\": \"Electronics\",\n                    \"stock_quantity\": 98,\n                    \"sku\": \"MOUSE001\",\n                    \"image_url\": \"https://example.com/mouse.jpg\",\n                    \"is_active\": true,\n                    \"created_by\": 1,\n                    \"created_at\": \"2025-07-18T13:03:15.000000Z\",\n                    \"updated_at\": \"2025-07-18T13:13:57.000000Z\"\n                },\n                \"created_at\": \"2025-07-18T13:13:57.000000Z\",\n                \"updated_at\": \"2025-07-18T13:13:57.000000Z\"\n            }\n        ],\n        \"created_at\": \"2025-07-18T13:13:57.000000Z\",\n        \"updated_at\": \"2025-07-18T13:14:13.000000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/7",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"7"
+							]
+						},
+						"description": "Delete an order"
+					},
+					"response": [
+						{
+							"name": "Validation",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/orders/8",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders",
+										"8"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:15:09 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:15:09 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Order not found\"\n}"
+						},
+						{
+							"name": "Delete Order",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/orders/7",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders",
+										"7"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:15:29 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:15:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Order deleted successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Order Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"shipped\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/8/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"8",
+								"status"
+							]
+						},
+						"description": "Update order status"
+					},
+					"response": [
+						{
+							"name": "Update Order Status",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"shipped\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/orders/8/status",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders",
+										"8",
+										"status"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:15:54 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:15:54 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "56"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Order status updated successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Assign Order to User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/8/assign",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"8",
+								"assign"
+							]
+						},
+						"description": "Assign order to a user"
+					},
+					"response": [
+						{
+							"name": "Assign Order to User",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 2\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/orders/8/assign",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders",
+										"8",
+										"assign"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:16:12 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:16:12 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Order assigned successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Order Statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/statistics",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"statistics"
+							]
+						},
+						"description": "Get order statistics"
+					},
+					"response": [
+						{
+							"name": "Get Order Statistics",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/orders/statistics",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders",
+										"statistics"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:21:54 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:21:54 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"total_orders\": 7,\n        \"pending_orders\": 2,\n        \"processing_orders\": 1,\n        \"shipped_orders\": 2,\n        \"delivered_orders\": 1,\n        \"cancelled_orders\": 1,\n        \"total_revenue\": 10799.78\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Order Statuses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/statuses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"statuses"
+							]
+						},
+						"description": "Get available order statuses"
+					},
+					"response": [
+						{
+							"name": "Get Order Statuses",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/orders/statuses",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders",
+										"statuses"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:24:39 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 13:24:39 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "57"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": [\n        \"pending\",\n        \"processing\",\n        \"shipped\",\n        \"delivered\",\n        \"cancelled\"\n    ]\n}"
+						}
+					]
+				}
+			],
+			"description": "Order management endpoints"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "user_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
