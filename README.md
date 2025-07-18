@@ -1,73 +1,174 @@
-# CMS API
+# Laravel CMS System
 
-This is a Laravel-based Content Management System API that provides endpoints for managing users, products, and orders.
+A comprehensive Content Management System built with Laravel 10, featuring user authentication, role-based access control, product management, and order processing.
 
-## API Endpoints
+## 📚 Documentation
 
-### Authentication
+This project includes comprehensive documentation to help you get started and understand the system:
 
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login and get token
-- `POST /api/auth/logout` - Logout user (requires authentication)
-- `GET /api/auth/account` - Get authenticated user details (requires authentication)
+- **[Backend Documentation](backend.md)** - Detailed explanation of the Laravel backend architecture, components, and implementation
+- **[Docker Setup Guide](docker.md)** - Step-by-step instructions for running the application with Docker
+- **[Testing Guide](testing.md)** - Comprehensive testing documentation and examples
 
-### Products
+## 🚀 Quick Start
 
-- `GET /api/products` - List all products (supports pagination, search, category filtering)
-- `GET /api/products/{id}` - Get a specific product
-- `POST /api/products` - Create a new product
-- `PUT /api/products/{id}` - Update a product
-- `DELETE /api/products/{id}` - Delete a product
-- `GET /api/products/categories` - Get list of product categories
-- `GET /api/products/low-stock` - Get products with low stock
-- `PATCH /api/products/{id}/stock` - Update product stock quantity
-
-### Orders
-
-- `GET /api/orders` - List all orders (supports pagination, status/customer/assignment filtering)
-- `GET /api/orders/{id}` - Get a specific order
-- `POST /api/orders` - Create a new order
-- `PUT /api/orders/{id}` - Update an order
-- `DELETE /api/orders/{id}` - Delete an order
-- `PATCH /api/orders/{id}/status` - Update order status
-- `PATCH /api/orders/{id}/assign` - Assign order to a user
-- `GET /api/orders/statistics` - Get order statistics
-- `GET /api/orders/statuses` - Get available order statuses
-
-## Postman Collection
-
-A complete Postman collection is included in the project. To use it:
-
-1. Import the `CMS_Postman_Collection.json` file into Postman
-2. Set up an environment with the following variables:
-   - `base_url`: `http://127.0.0.1:8000/api`
-   - `user_token`: (this will be automatically set after login)
-
-The collection is organized into folders:
-- Authentication
-- Products
-- Orders
-
-Each request includes the necessary headers, body parameters, and authorization settings.
-
-## Authentication
-
-The API uses Laravel Sanctum for authentication. To access protected endpoints:
-
-1. Register or login to get a token
-2. Include the token in the Authorization header as a Bearer token
-
-## Running the API
+### Option 1: Local Development
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd cms
+
 # Install dependencies
 composer install
+
+# Copy environment file
+cp .env.example .env
+
+# Generate application key
+php artisan key:generate
+
+# Configure your database in .env file
 
 # Run migrations and seeders
 php artisan migrate --seed
 
-# Start the server
+# Start the development server
 php artisan serve
 ```
 
-You can then access the API at `http://127.0.0.1:8000/api`.
+### Option 2: Docker Setup
+
+For a complete Docker setup with database, see the **[Docker Setup Guide](docker.md)**.
+
+```bash
+# Build and start containers
+docker-compose up -d
+
+# Set up the application
+docker-compose exec backend php artisan key:generate
+docker-compose exec backend php artisan migrate --seed
+```
+
+## 🏗️ System Architecture
+
+The CMS follows Laravel best practices with a clean, scalable architecture:
+
+- **Repository Pattern** - Data access abstraction
+- **Service Layer** - Business logic encapsulation  
+- **Request Validation** - Input validation and sanitization
+- **API Resources** - Response formatting
+- **Role-Based Access Control** - User authorization
+- **Laravel Sanctum** - API authentication
+
+For detailed architecture information, see **[Backend Documentation](backend.md)**.
+
+## 🔐 Authentication & Authorization
+
+The system uses Laravel Sanctum for API authentication with three user roles:
+
+- **Admin** - Full access to all features
+- **Manager** - Product and order management
+- **User** - Basic access to products and orders
+
+## 📋 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login and get token
+- `POST /api/auth/logout` - Logout user
+- `GET /api/auth/account` - Get authenticated user details
+
+### Products
+- `GET /api/products` - List products (with pagination, search, filtering)
+- `GET /api/products/{id}` - Get specific product
+- `POST /api/products` - Create new product
+- `PUT /api/products/{id}` - Update product
+- `DELETE /api/products/{id}` - Delete product
+- `GET /api/products/categories` - Get product categories
+- `GET /api/products/low-stock` - Get low stock products
+- `PATCH /api/products/{id}/stock` - Update product stock
+
+### Orders
+- `GET /api/orders` - List orders (with pagination, filtering)
+- `GET /api/orders/{id}` - Get specific order
+- `POST /api/orders` - Create new order
+- `PUT /api/orders/{id}` - Update order
+- `DELETE /api/orders/{id}` - Delete order
+- `PATCH /api/orders/{id}/status` - Update order status
+- `PATCH /api/orders/{id}/assign` - Assign order to user
+- `GET /api/orders/statistics` - Get order statistics
+- `GET /api/orders/statuses` - Get available statuses
+
+## 🧪 Testing
+
+The project includes comprehensive test coverage:
+
+```bash
+# Run all tests
+php artisan test
+
+# Run specific test suites
+php artisan test --testsuite=Feature
+php artisan test --testsuite=Unit
+
+# Run with coverage (requires Xdebug)
+php artisan test --coverage
+```
+
+For detailed testing information, see **[Testing Guide](testing.md)**.
+
+## 📦 Postman Collection
+
+A complete Postman collection is included for API testing:
+
+1. Import `CMS_Postman_Collection.json` into Postman
+2. Set up environment variables:
+   - `base_url`: `http://127.0.0.1:8000/api`
+   - `user_token`: (auto-set after login or register)
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Key configuration options in `.env`:
+
+```env
+APP_NAME="CMS API"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=cms
+DB_USERNAME=root
+DB_PASSWORD=
+
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_FROM_ADDRESS="noreply@example.com"
+```
+
+### Database Setup
+
+The system includes migrations for:
+- Users (with role-based access)
+- Products (with categories and stock tracking)
+- Orders (with status tracking and assignment)
+- Order Items (for order details)
+
+## 🚀 Deployment
+
+For production deployment:
+
+1. Set `APP_ENV=production` and `APP_DEBUG=false`
+2. Configure production database credentials
+3. Enable caching: `php artisan config:cache`
+4. Set up proper logging and monitoring
+5. Review security settings
+
+For Docker deployment, see **[Docker Setup Guide](docker.md)**.
+

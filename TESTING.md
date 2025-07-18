@@ -16,6 +16,32 @@ The project includes both **Feature Tests** and **Unit Tests** organized as foll
 - **ProductServiceTest.php** - Tests product service business logic
 - **OrderServiceTest.php** - Tests order service business logic
 
+## Test Structure
+
+```
+tests/
+├── Feature/                 # Feature tests (API endpoints)
+│   ├── Auth/               # Authentication tests
+│   │   ├── LoginTest.php
+│   │   ├── RegisterTest.php
+│   │   └── LogoutTest.php
+│   ├── Product/            # Product API tests
+│   │   ├── ProductApiTest.php
+│   │   └── ProductStockTest.php
+│   └── Order/              # Order API tests
+│       ├── OrderApiTest.php
+│       └── OrderStatusTest.php
+├── Unit/                   # Unit tests
+│   ├── Services/           # Service layer tests
+│   │   ├── AuthServiceTest.php
+│   │   ├── ProductServiceTest.php
+│   │   └── OrderServiceTest.php
+│   └── Repositories/       # Repository tests
+│       ├── ProductRepositoryTest.php
+│       └── OrderRepositoryTest.php
+└── TestCase.php            # Base test class
+```
+
 ## Test Commands
 
 ### Run All Tests
@@ -60,6 +86,19 @@ php artisan test --filter test_method_name
 
 # Example: Run only login tests
 php artisan test --filter login
+```
+
+### Test in Docker
+
+```bash
+# Open the docker container
+docker exec -it cms_backend sh
+
+# Run tests in Docker container
+php artisan test
+
+# Run tests with coverage in Docker
+php artisan test --coverage
 ```
 
 ## Test Categories

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: cms_backend
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    depends_on:
+      - mysql
+    volumes:
+      - .:/var/www/html
+    networks:
+      - cms_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: cms_mysql
+    restart: unless-stopped
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cms
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - cms_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  cms_network:
+    driver: bridge
