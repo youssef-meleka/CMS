@@ -25,7 +25,7 @@ class AuthServiceTest extends TestCase
         // Create roles and permissions
         $this->setupRolesAndPermissions();
 
-        $this->authService = new AuthService(new UserRepository());
+        $this->authService = new AuthService(new UserRepository(new User()));
     }
 
     private function setupRolesAndPermissions(): void

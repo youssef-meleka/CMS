@@ -94,6 +94,8 @@ class OrderController extends Controller
     public function show(Order $order): JsonResponse
     {
         try {
+            $order->load(['customer', 'assignedUser', 'orderItems.product']);
+
             return response()->json([
                 'success' => true,
                 'data' => new OrderResource($order)

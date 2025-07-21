@@ -34,8 +34,8 @@ class OrderServiceTest extends TestCase
         // Create roles and permissions
         $this->setupRolesAndPermissions();
 
-        $this->orderRepository = new OrderRepository();
-        $this->productRepository = new ProductRepository();
+        $this->orderRepository = new OrderRepository(new Order());
+        $this->productRepository = new ProductRepository(new Product());
         $this->productService = new ProductService($this->productRepository);
         $this->orderService = new OrderService(
             $this->orderRepository,

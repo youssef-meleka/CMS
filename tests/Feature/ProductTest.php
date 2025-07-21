@@ -531,7 +531,7 @@ class ProductTest extends TestCase
         $response->assertStatus(200)
                 ->assertJson([
                     'success' => true,
-                    'message' => 'Stock updated successfully',
+                    'message' => 'Product stock updated successfully',
                 ]);
 
         $this->assertDatabaseHas('products', [

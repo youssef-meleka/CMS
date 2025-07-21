@@ -82,6 +82,8 @@ class ProductController extends Controller
     public function show(Product $product): JsonResponse
     {
         try {
+            $product->load('creator');
+
             return response()->json([
                 'success' => true,
                 'data' => new ProductResource($product)
