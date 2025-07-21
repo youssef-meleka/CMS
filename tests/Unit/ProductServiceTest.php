@@ -27,7 +27,7 @@ class ProductServiceTest extends TestCase
         // Create roles and permissions
         $this->setupRolesAndPermissions();
 
-        $this->productRepository = new ProductRepository();
+        $this->productRepository = new ProductRepository(new Product());
         $this->productService = new ProductService($this->productRepository);
 
         $this->user = User::create([
@@ -137,10 +137,61 @@ class ProductServiceTest extends TestCase
 
         $result = $this->productService->deleteProduct($product->id);
 
-        $this->assertTrue($result);
+        $this->assertTrue($result['success']);
+        $this->assertEquals('Product deleted successfully', $result['message']);
 
         $deletedProduct = $this->productService->getProductById($product->id);
         $this->assertNull($deletedProduct);
+    }
+
+    /** @test */
+    public function cannot_delete_product_with_related_orders()
+    {
+        $product = Product::create([
+            'name' => 'Product with Orders',
+            'description' => 'Product Description',
+            'price' => 29.99,
+            'category' => 'Books',
+            'stock_quantity' => 100,
+            'sku' => 'SKU004',
+            'created_by' => $this->user->id,
+        ]);
+
+        // Create an order with this product
+        $order = \App\Models\Order::create([
+            'order_number' => 'ORD-001',
+            'customer_id' => $this->user->id,
+            'status' => 'pending',
+            'total_amount' => 29.99,
+            'shipping_address' => '123 Test St, Test City, TC 12345',
+            'billing_address' => '123 Test St, Test City, TC 12345',
+        ]);
+
+        \App\Models\OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'unit_price' => 29.99,
+            'total_price' => 29.99,
+        ]);
+
+        $result = $this->productService->deleteProduct($product->id);
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('Cannot delete product because it has related orders', $result['message']);
+
+        // Product should still exist
+        $existingProduct = $this->productService->getProductById($product->id);
+        $this->assertNotNull($existingProduct);
+    }
+
+    /** @test */
+    public function cannot_delete_nonexistent_product()
+    {
+        $result = $this->productService->deleteProduct(99999);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Product not found', $result['message']);
     }
 
     /** @test */

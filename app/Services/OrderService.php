@@ -28,12 +28,6 @@ class OrderService
     }
 
 
-    public function getAllOrders(): Collection
-    {
-        return $this->orderRepository->all();
-    }
-
-
     public function getPaginatedOrders(int $perPage = 15): LengthAwarePaginator
     {
         return $this->orderRepository->paginate($perPage);
@@ -141,12 +135,6 @@ class OrderService
     public function getOrdersAssignedToUser(int $userId, int $perPage = 15): LengthAwarePaginator
     {
         return $this->orderRepository->getAssignedToUserPaginated($userId, $perPage);
-    }
-
-
-    public function getOrdersByDateRange(string $startDate, string $endDate): Collection
-    {
-        return $this->orderRepository->getOrdersByDateRange($startDate, $endDate);
     }
 
 

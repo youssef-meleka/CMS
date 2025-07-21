@@ -114,16 +114,6 @@ class AuthService
         }
     }
 
-    public function removeRole(User $user, string $role): bool
-    {
-        try {
-            $user->removeRole($role);
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
     public function givePermission(User $user, string $permission): bool
     {
         try {
@@ -134,13 +124,4 @@ class AuthService
         }
     }
 
-    public function revokePermission(User $user, string $permission): bool
-    {
-        try {
-            $user->revokePermissionTo($permission);
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
 }

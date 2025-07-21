@@ -7,19 +7,26 @@ use App\Repositories\Interfaces\OrderRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class OrderRepository implements OrderRepositoryInterface
+class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 {
-    /**
-     * Get all orders
-     */
+    public function __construct(Order $model)
+    {
+        parent::__construct($model);
+    }
+
+
     public function all(): Collection
     {
         return Order::with(['customer', 'assignedUser', 'orderItems.product'])->get();
     }
 
-    /**
-     * Get paginated orders
-     */
+
+    public function findById(int $id): ?Order
+    {
+        return Order::with(['customer', 'assignedUser', 'orderItems.product'])->find($id);
+    }
+
+
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
         return Order::with(['customer', 'assignedUser', 'orderItems.product'])
@@ -27,73 +34,7 @@ class OrderRepository implements OrderRepositoryInterface
             ->paginate($perPage);
     }
 
-    /**
-     * Find order by ID
-     */
-    public function findById(int $id): ?Order
-    {
-        return Order::with(['customer', 'assignedUser', 'orderItems.product'])->find($id);
-    }
-
-    /**
-     * Find order by order number
-     */
-    public function findByOrderNumber(string $orderNumber): ?Order
-    {
-        return Order::where('order_number', $orderNumber)
-            ->with(['customer', 'assignedUser', 'orderItems.product'])
-            ->first();
-    }
-
-    /**
-     * Create new order
-     */
-    public function create(array $data): Order
-    {
-        return Order::create($data);
-    }
-
-    /**
-     * Update order
-     */
-    public function update(int $id, array $data): bool
-    {
-        $order = Order::find($id);
-
-        if (!$order) {
-            return false;
-        }
-
-        return $order->update($data);
-    }
-
-    /**
-     * Delete order
-     */
-    public function delete(int $id): bool
-    {
-        $order = Order::find($id);
-
-        if (!$order) {
-            return false;
-        }
-
-        return $order->delete();
-    }
-
-    /**
-     * Get orders by status
-     */
-    public function getByStatus(string $status): Collection
-    {
-        return Order::byStatus($status)
-            ->with(['customer', 'assignedUser'])
-            ->get();
-    }
-
-    /**
-     * Get orders by status with pagination
-     */
+    
     public function getByStatusPaginated(string $status, int $perPage = 15): LengthAwarePaginator
     {
         return Order::byStatus($status)
@@ -101,19 +42,7 @@ class OrderRepository implements OrderRepositoryInterface
             ->paginate($perPage);
     }
 
-    /**
-     * Get orders by customer
-     */
-    public function getByCustomer(int $customerId): Collection
-    {
-        return Order::where('customer_id', $customerId)
-            ->with(['assignedUser', 'orderItems.product'])
-            ->get();
-    }
 
-    /**
-     * Get orders by customer with pagination
-     */
     public function getByCustomerPaginated(int $customerId, int $perPage = 15): LengthAwarePaginator
     {
         return Order::where('customer_id', $customerId)
@@ -121,19 +50,6 @@ class OrderRepository implements OrderRepositoryInterface
             ->paginate($perPage);
     }
 
-    /**
-     * Get orders assigned to user
-     */
-    public function getAssignedToUser(int $userId): Collection
-    {
-        return Order::assignedTo($userId)
-            ->with(['customer', 'orderItems.product'])
-            ->get();
-    }
-
-    /**
-     * Get orders assigned to user with pagination
-     */
     public function getAssignedToUserPaginated(int $userId, int $perPage = 15): LengthAwarePaginator
     {
         return Order::assignedTo($userId)
@@ -141,9 +57,7 @@ class OrderRepository implements OrderRepositoryInterface
             ->paginate($perPage);
     }
 
-    /**
-     * Update order status
-     */
+
     public function updateStatus(int $id, string $status): bool
     {
         $order = Order::find($id);
@@ -163,9 +77,6 @@ class OrderRepository implements OrderRepositoryInterface
         return $order->save();
     }
 
-    /**
-     * Assign order to user
-     */
     public function assignToUser(int $orderId, int $userId): bool
     {
         $order = Order::find($orderId);
@@ -178,9 +89,7 @@ class OrderRepository implements OrderRepositoryInterface
         return $order->save();
     }
 
-    /**
-     * Get orders within date range
-     */
+
     public function getOrdersByDateRange(string $startDate, string $endDate): Collection
     {
         return Order::whereBetween('created_at', [$startDate, $endDate])

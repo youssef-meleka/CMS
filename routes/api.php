@@ -28,31 +28,57 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-// Protected routes
-Route::middleware('auth:sanctum')->group(function () {
+// Product routes - grouped by middleware
+Route::middleware(['auth:sanctum', 'can:view products'])->group(function () {
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products/categories', [ProductController::class, 'categories']);
+    Route::get('/products/low-stock', [ProductController::class, 'lowStock']);
+    Route::get('/products/{product}', [ProductController::class, 'show']);
+});
 
-    // Product routes
-    Route::prefix('products')->group(function () {
-        Route::get('/', [ProductController::class, 'index']);
-        Route::post('/', [ProductController::class, 'store']);
-        Route::get('/categories', [ProductController::class, 'categories']);
-        Route::get('/low-stock', [ProductController::class, 'lowStock']);
-        Route::get('/{id}', [ProductController::class, 'show']);
-        Route::put('/{id}', [ProductController::class, 'update']);
-        Route::delete('/{id}', [ProductController::class, 'destroy']);
-        Route::patch('/{id}/stock', [ProductController::class, 'updateStock']);
-    });
+Route::middleware(['auth:sanctum', 'can:create products'])->group(function () {
+    Route::post('/products', [ProductController::class, 'store']);
+});
 
-    // Order routes
-    Route::prefix('orders')->group(function () {
-        Route::get('/', [OrderController::class, 'index']);
-        Route::post('/', [OrderController::class, 'store']);
-        Route::get('/statistics', [OrderController::class, 'statistics']);
-        Route::get('/statuses', [OrderController::class, 'statuses']);
-        Route::get('/{id}', [OrderController::class, 'show']);
-        Route::put('/{id}', [OrderController::class, 'update']);
-        Route::delete('/{id}', [OrderController::class, 'destroy']);
-        Route::patch('/{id}/status', [OrderController::class, 'updateStatus']);
-        Route::patch('/{id}/assign', [OrderController::class, 'assign']);
-    });
+Route::middleware(['auth:sanctum', 'can:edit products'])->group(function () {
+    Route::put('/products/{product}', [ProductController::class, 'update']);
+});
+
+Route::middleware(['auth:sanctum', 'can:delete products'])->group(function () {
+    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+});
+
+Route::middleware(['auth:sanctum', 'can:manage product stock'])->group(function () {
+    Route::patch('/products/{product}/stock', [ProductController::class, 'updateStock']);
+});
+
+// Order routes - grouped by middleware
+Route::middleware(['auth:sanctum', 'can:view statistics'])->group(function () {
+    Route::get('/orders/statistics', [OrderController::class, 'statistics']);
+});
+
+Route::middleware(['auth:sanctum', 'can:view orders'])->group(function () {
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/statuses', [OrderController::class, 'statuses']);
+    Route::get('/orders/{order}', [OrderController::class, 'show']);
+});
+
+Route::middleware(['auth:sanctum', 'can:create orders'])->group(function () {
+    Route::post('/orders', [OrderController::class, 'store']);
+});
+
+Route::middleware(['auth:sanctum', 'can:edit orders'])->group(function () {
+    Route::put('/orders/{order}', [OrderController::class, 'update']);
+});
+
+Route::middleware(['auth:sanctum', 'can:delete orders'])->group(function () {
+    Route::delete('/orders/{order}', [OrderController::class, 'destroy']);
+});
+
+Route::middleware(['auth:sanctum', 'can:update order status'])->group(function () {
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus']);
+});
+
+Route::middleware(['auth:sanctum', 'can:assign orders'])->group(function () {
+    Route::patch('/orders/{order}/assign', [OrderController::class, 'assign']);
 });

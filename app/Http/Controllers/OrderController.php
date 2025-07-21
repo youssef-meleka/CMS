@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Order\AssignOrderRequest;
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
+use App\Http\Requests\Order\UpdateOrderStatusRequest;
 use App\Http\Resources\OrderResource;
+use App\Models\Order;
+use App\Models\Product;
 use App\Repositories\UserRepository;
 use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
@@ -18,14 +22,6 @@ class OrderController extends Controller
     public function __construct(OrderService $orderService)
     {
         $this->orderService = $orderService;
-        $this->middleware('auth:sanctum');
-        $this->middleware('can:view orders')->only(['index', 'show', 'statuses']);
-        $this->middleware('can:create orders')->only(['store']);
-        $this->middleware('can:edit orders')->only(['update']);
-        $this->middleware('can:delete orders')->only(['destroy']);
-        $this->middleware('can:update order status')->only(['updateStatus']);
-        $this->middleware('can:assign orders')->only(['assignOrder']);
-        $this->middleware('can:view statistics')->only(['statistics']);
     }
 
     public function index(Request $request): JsonResponse
@@ -95,18 +91,9 @@ class OrderController extends Controller
         }
     }
 
-    public function show(int $id): JsonResponse
+    public function show(Order $order): JsonResponse
     {
         try {
-            $order = $this->orderService->getOrderById($id);
-
-            if (!$order) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Order not found'
-                ], 404);
-            }
-
             return response()->json([
                 'success' => true,
                 'data' => new OrderResource($order)
@@ -120,10 +107,10 @@ class OrderController extends Controller
         }
     }
 
-    public function update(UpdateOrderRequest $request, int $id): JsonResponse
+    public function update(UpdateOrderRequest $request, Order $order): JsonResponse
     {
         try {
-            $updated = $this->orderService->updateOrder($id, $request->validated());
+            $updated = $this->orderService->updateOrder($order->id, $request->validated());
 
             if (!$updated) {
                 return response()->json([
@@ -132,12 +119,12 @@ class OrderController extends Controller
                 ], 404);
             }
 
-            $order = $this->orderService->getOrderById($id);
+            $updatedOrder = $this->orderService->getOrderById($order->id);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Order updated successfully',
-                'data' => new OrderResource($order)
+                'data' => new OrderResource($updatedOrder)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -148,10 +135,10 @@ class OrderController extends Controller
         }
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(Order $order): JsonResponse
     {
         try {
-            $deleted = $this->orderService->deleteOrder($id);
+            $deleted = $this->orderService->deleteOrder($order->id);
 
             if (!$deleted) {
                 return response()->json([
@@ -173,14 +160,11 @@ class OrderController extends Controller
         }
     }
 
-    public function updateStatus(Request $request, int $id): JsonResponse
+    public function updateStatus(UpdateOrderStatusRequest $request, Order $order): JsonResponse
     {
         try {
-            $request->validate([
-                'status' => 'required|in:pending,processing,shipped,delivered,cancelled'
-            ]);
-
-            $updated = $this->orderService->updateOrderStatus($id, $request->status);
+            $data = $request->validated();
+            $updated = $this->orderService->updateOrderStatus($order->id, $data['status']);
 
             if (!$updated) {
                 return response()->json([
@@ -202,14 +186,11 @@ class OrderController extends Controller
         }
     }
 
-    public function assign(Request $request, int $id): JsonResponse
+    public function assign(AssignOrderRequest $request, Order $order): JsonResponse
     {
         try {
-            $request->validate([
-                'user_id' => 'required|integer|exists:users,id'
-            ]);
-
-            $assigned = $this->orderService->assignOrderToUser($id, $request->user_id);
+            $data = $request->validated();
+            $assigned = $this->orderService->assignOrderToUser($order->id, $data['user_id']);
 
             if (!$assigned) {
                 return response()->json([
@@ -234,16 +215,16 @@ class OrderController extends Controller
     public function statistics(): JsonResponse
     {
         try {
-            $statistics = $this->orderService->getOrderStatistics();
+            $stats = $this->orderService->getOrderStatistics();
 
             return response()->json([
                 'success' => true,
-                'data' => $statistics
+                'data' => $stats
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to retrieve order statistics',
+                'message' => 'Failed to retrieve statistics',
                 'error' => $e->getMessage()
             ], 500);
         }

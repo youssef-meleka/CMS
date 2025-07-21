@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
+use App\Http\Requests\Product\UpdateProductStockRequest;
 use App\Http\Resources\ProductResource;
+use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,12 +19,6 @@ class ProductController extends Controller
     public function __construct(ProductService $productService)
     {
         $this->productService = $productService;
-        $this->middleware('auth:sanctum');
-        $this->middleware('can:view products')->only(['index', 'show', 'categories', 'lowStock']);
-        $this->middleware('can:create products')->only(['store']);
-        $this->middleware('can:edit products')->only(['update']);
-        $this->middleware('can:delete products')->only(['destroy']);
-        $this->middleware('can:manage product stock')->only(['updateStock']);
     }
 
     public function index(Request $request): JsonResponse
@@ -83,18 +79,9 @@ class ProductController extends Controller
         }
     }
 
-    public function show(int $id): JsonResponse
+    public function show(Product $product): JsonResponse
     {
         try {
-            $product = $this->productService->getProductById($id);
-
-            if (!$product) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Product not found'
-                ], 404);
-            }
-
             return response()->json([
                 'success' => true,
                 'data' => new ProductResource($product)
@@ -108,10 +95,10 @@ class ProductController extends Controller
         }
     }
 
-    public function update(UpdateProductRequest $request, int $id): JsonResponse
+    public function update(UpdateProductRequest $request, Product $product): JsonResponse
     {
         try {
-            $updated = $this->productService->updateProduct($id, $request->validated());
+            $updated = $this->productService->updateProduct($product->id, $request->validated());
 
             if (!$updated) {
                 return response()->json([
@@ -120,12 +107,12 @@ class ProductController extends Controller
                 ], 404);
             }
 
-            $product = $this->productService->getProductById($id);
+            $updatedProduct = $this->productService->getProductById($product->id);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Product updated successfully',
-                'data' => new ProductResource($product)
+                'data' => new ProductResource($updatedProduct)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -136,22 +123,22 @@ class ProductController extends Controller
         }
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(Product $product): JsonResponse
     {
         try {
-            $deleted = $this->productService->deleteProduct($id);
+            $result = $this->productService->deleteProduct($product->id);
 
-            if (!$deleted) {
+            if ($result['success']) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $result['message']
+                ], 200);
+            } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Product not found'
-                ], 404);
+                    'message' => $result['message']
+                ], 400);
             }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Product deleted successfully'
-            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -198,14 +185,11 @@ class ProductController extends Controller
         }
     }
 
-    public function updateStock(Request $request, int $id): JsonResponse
+    public function updateStock(UpdateProductStockRequest $request, Product $product): JsonResponse
     {
         try {
-            $request->validate([
-                'stock_quantity' => 'required|integer|min:0'
-            ]);
-
-            $updated = $this->productService->updateStock($id, $request->stock_quantity);
+            $data = $request->validated();
+            $updated = $this->productService->updateStock($product->id, $data['stock_quantity']);
 
             if (!$updated) {
                 return response()->json([
@@ -216,12 +200,12 @@ class ProductController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Stock updated successfully'
+                'message' => 'Product stock updated successfully'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update stock',
+                'message' => 'Failed to update product stock',
                 'error' => $e->getMessage()
             ], 500);
         }

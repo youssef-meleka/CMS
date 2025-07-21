@@ -25,11 +25,6 @@ class ProductService
     }
 
 
-    public function getPaginatedProducts(int $perPage = 15): LengthAwarePaginator
-    {
-        return $this->productRepository->paginate($perPage);
-    }
-
 
     public function getProductById(int $id): ?Product
     {
@@ -52,9 +47,38 @@ class ProductService
     }
 
 
-    public function deleteProduct(int $id): bool
+    public function deleteProduct(int $id): array
     {
-        return $this->productRepository->delete($id);
+        $product = $this->productRepository->findById($id);
+
+        if (!$product) {
+            return [
+                'success' => false,
+                'message' => 'Product not found'
+            ];
+        }
+
+        // Check if product has related order items
+        if ($product->orderItems()->count() > 0) {
+            return [
+                'success' => false,
+                'message' => 'Cannot delete product because it has related orders. Please remove all related orders first.'
+            ];
+        }
+
+        $deleted = $this->productRepository->delete($id);
+
+        if ($deleted) {
+            return [
+                'success' => true,
+                'message' => 'Product deleted successfully'
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => 'Failed to delete product'
+        ];
     }
 
 
